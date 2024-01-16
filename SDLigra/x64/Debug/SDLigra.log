@@ -5,18 +5,18 @@
   Intro.c
   Item.c
   main.c
+D:\fb\SDLigra\main.c(110,66): warning C4047: функция: "Person *" отличается по уровням косвенного обращения от "Person *[6]"
+D:\fb\SDLigra\main.c(110,66): warning C4024: gettype: различные типы для формального и фактического параметров 4
+D:\fb\SDLigra\main.c(173,24): warning C4244: функция: преобразование "double" в "Uint32", возможна потеря данных
+D:\fb\SDLigra\main.c(40,10): warning C4101: iswin: неиспользованная локальная переменная
   Map.c
-D:\c\SDLigra\SDLigra\main.c(110,66): warning C4047: функция: "Person *" отличается по уровням косвенного обращения от "Person *[6]"
-D:\c\SDLigra\SDLigra\main.c(110,66): warning C4024: gettype: различные типы для формального и фактического параметров 4
-D:\c\SDLigra\SDLigra\main.c(173,24): warning C4244: функция: преобразование "double" в "Uint32", возможна потеря данных
-D:\c\SDLigra\SDLigra\main.c(40,10): warning C4101: iswin: неиспользованная локальная переменная
   Person.c
   SecondLayerFunctions.c
-D:\c\SDLigra\SDLigra\SecondLayerFunctions.c(18,52): warning C4028: формальный параметр 4 отличается от объявления
+D:\fb\SDLigra\SecondLayerFunctions.c(18,52): warning C4028: формальный параметр 4 отличается от объявления
   SkillManager.c
   Tile.c
   Button.c
   Создание кода...
-D:\c\SDLigra\SDLigra\main.c(187): warning C4716: SDL_main: должна возвращать значение
-D:\c\SDLigra\SDLigra\Attributes.c(10): warning C4716: CreateAtribute: должна возвращать значение
-  SDLigra.vcxproj -> D:\c\SDLigra\x64\Debug\SDLigra.exe
+D:\fb\SDLigra\main.c(187): warning C4716: SDL_main: должна возвращать значение
+D:\fb\SDLigra\Attributes.c(10): warning C4716: CreateAtribute: должна возвращать значение
+  SDLigra.vcxproj -> D:\fb\x64\Debug\SDLigra.exe
