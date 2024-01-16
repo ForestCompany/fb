@@ -1,0 +1,7 @@
+﻿  Person.c
+  main.c
+C:\Users\ilkin\source\repos\SDLigra\SDLigra\main.c(176,22): warning C4244: функция: преобразование "double" в "Uint32", возможна потеря данных
+C:\Users\ilkin\source\repos\SDLigra\SDLigra\main.c(67,12): warning C4101: cordstolik: неиспользованная локальная переменная
+  Создание кода...
+C:\Users\ilkin\source\repos\SDLigra\SDLigra\main.c(188): warning C4716: SDL_main: должна возвращать значение
+  SDLigra.vcxproj -> C:\Users\ilkin\source\repos\SDLigra\x64\Debug\SDLigra.exe
