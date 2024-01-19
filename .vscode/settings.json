@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "person.h": "c",
+        "item.h": "c"
+    }
+}
