@@ -69,10 +69,7 @@ void UpdateSkill(SDL_Renderer* r, Skill* b)
 
 void PressSkill(Skill* b)
 {
-	
-		SwitchState(b);
-		b->StartCd = SDL_GetTicks();
-		b->counter = b->delta / 1000;
-
-	
+	SwitchState(b);
+	b->StartCd = SDL_GetTicks();
+	b->counter = b->delta / 1000;	
 }
