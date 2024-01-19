@@ -2,7 +2,7 @@
 #ifndef	SECONDLFINCTIONS_H
 #define SECONDLFINCTIONS_H
 
-#include "Person.h"
+#include "Emanager.h"
 #include "Map.h"
 #include"Skill.h"
 

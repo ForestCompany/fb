@@ -5,6 +5,7 @@
 
  SDL_Renderer* renderer;
  SDL_Window* window;
+Person* EnemyArr[ENEMYCOUNT];
 
 int main(int argc, char* argv[]) 
 {
@@ -16,8 +17,8 @@ int main(int argc, char* argv[])
     SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
 
     window = SDL_CreateWindow("Forest", 0, 0, SCREENWIDTH, SCREENHEIGHT, SDL_WINDOW_OPENGL);
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED  );//| SDL_RENDERER_PRESENTVSYNC
+/*  */
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED  );
 
 	Uint32 lastUpdateTime = 0;
 
@@ -25,11 +26,12 @@ int main(int argc, char* argv[])
 
     Person* TOLIK = CreatePerson(renderer, TILESIZE, TILESIZE, TILESIZE, TILESIZE, "images/tolik.png");
 
+    FillEnemyArr(renderer,EnemyArr);
     // Person** EnemyArr = FillEnemyArr(renderer);
     // FillSkillArr(renderer);
-    Skill* skil = CreateSkill(renderer,(SDL_Rect){XTABSKILL,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/sword.jpg","images/swordBLACK.jpg",5000,35);
-    Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL+60,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/sword.jpg","images/swordBLACK.jpg",5000,35);
-    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL+60*2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/sword.jpg","images/swordBLACK.jpg",5000,35);
+    Skill* skil  = CreateSkill(renderer,(SDL_Rect){XTABSKILL,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/sword.jpg","images/swordBLACK.jpg",5000,35);
+    Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL1,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/heal.jpg","images/healBLACK.jpg",5000,35);
+    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/ulta.jpg","images/ultaBLACK.jpg",5000,30/*  */);
 
   //1231231231231231213
     Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "images/hood.png");
@@ -42,7 +44,7 @@ int main(int argc, char* argv[])
     bool cursor = false;
 
     SDL_Point mousecords;
-    // ������� �������� ��� ������� �����������
+
     SDL_Texture* bufferTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREENWIDTH, SCREENHEIGHT);
     SDL_SetRenderTarget(renderer, bufferTexture);
 
@@ -65,10 +67,7 @@ int main(int argc, char* argv[])
                     isexit = true;
                     break;
                 case SDLK_q:
-                    // if (SkillArray[0]->state == ACTIVE) {
-                    //     PressSkill(SkillArray[0]);
-                    // }
-
+           
                         if(skil->state == ACTIVE && TOLIK->stats.mana>= skil->manacost){
                             PressSkill(skil);
                             DecrementHP(TOLIK,25);
@@ -110,7 +109,7 @@ int main(int argc, char* argv[])
                 SDL_GetMouseState(&mousecords.x, &mousecords.y);
                 SDL_Point mapcord = { mousecords.y / TILESIZE, mousecords.x / TILESIZE };
              
-                typeoftile e = GetType(&(map->map[mapcord.y][mapcord.x]));
+                typeoftile e = GetTypeOFTile(&(map->map[mapcord.y][mapcord.x]));
 
                 if (isnearperson(TOLIK,  mousecords)) {
                     switch (e) {
@@ -138,18 +137,18 @@ int main(int argc, char* argv[])
         UpdateSkill(renderer,skil);
         UpdateSkill(renderer,skil1);
         UpdateSkill(renderer,skil2);
-        // ������� � ��������� ����� �� ��������
+    
         SDL_SetRenderTarget(renderer, bufferTexture);
         ShowMap(renderer, map);
         ShowPerson(renderer, TOLIK);
-        // ShowEnemyArr(renderer,EnemyArr);
+      
         ShowEntity(renderer, hood);
-        // ShowSkillArr(renderer);
+        ShowEnemyArr(renderer,EnemyArr);
         ShowSkill(renderer,skil);
         ShowSkill(renderer,skil1);
         ShowSkill(renderer,skil2);
         ShowFontStats(renderer,TOLIK, color);
-        // ���������� ������
+      
         SDL_SetRenderTarget(renderer, NULL);
         SDL_RenderCopy(renderer, bufferTexture, NULL, NULL);
         SDL_RenderPresent(renderer);
@@ -162,24 +161,23 @@ int main(int argc, char* argv[])
             if(TOLIK->stats.mana < TOLIK->stats.intellekt->cap) {
                 TOLIK->stats.mana += TOLIK->stats.intellekt->income;
             }
-            lastUpdateTime = currentTime; // ��������� ����� ���������� ����������
+            lastUpdateTime = currentTime; 
         }
         
       
         SDL_Delay(1000./fps);
     }
 
-    // ����������� �������
+ 
     SDL_DestroyTexture(bufferTexture);
-    // DestroyEnemyArr(EnemyArr);
+
     DestroyPerson(TOLIK);
     DestroyEntity(hood);
     DestroyMap(map);
-    // DetroySkillArr();
+    DestroyEnemyArr(EnemyArr);
     DestroySkill(skil);
     DestroySkill(skil1);
-    DestroySkill(skil2
-    );
+    DestroySkill(skil2);
 	SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();

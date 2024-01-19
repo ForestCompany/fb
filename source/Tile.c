@@ -19,6 +19,6 @@ void DestroyTile(Tile* tile) {
     free(tile);
 }
 
-typeoftile GetType(Tile* t){
+typeoftile GetTypeOFTile(Tile* t){
     return t->type;
 }

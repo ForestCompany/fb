@@ -24,7 +24,7 @@ void ShowTile(SDL_Renderer* r, Tile* tile);
 
 void DestroyTile(Tile* tile);
 
-typeoftile GetType(Tile* t);
+typeoftile GetTypeOFTile(Tile* t);
 
 
 
