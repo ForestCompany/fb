@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "scenemanager.h": "c",
+        "secondlayerfunctions.h": "c",
+        "person.h": "c",
+        "skill.h": "c",
+        "emanager.h": "c",
+        "functions.h": "c",
+        "attributes.h": "c",
+        "item.h": "c",
+        "sdl.h": "c",
+        "skillmanager.h": "c",
+        "stats.h": "c",
+        "map.h": "c",
+        "tile.h": "c",
+        "entity.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
