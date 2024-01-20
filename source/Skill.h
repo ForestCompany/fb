@@ -19,7 +19,7 @@ void ShowSkill(SDL_Renderer* r, Skill* v);
 
 void DestroySkill(Skill* v);
 
-void SwitchState(Skill* h);
+void SwitchSkillState(Skill* h);
 
 void UpdateSkill(SDL_Renderer* r,Skill* b);
 

@@ -5,6 +5,7 @@ Button* CreateButton(SDL_Renderer* r, SDL_Rect rect, const char* state1path, con
 	button->rect = rect;
 	button->state1 = CreateTextureFromImg(r, state1path);
 	button->state2 = CreateTextureFromImg(r, state2path);
+	button->state = STATE1;
 	return button;
 }
 

@@ -28,8 +28,8 @@ void Game(SDL_Renderer *renderer)
     FillEnemyArr(renderer,EnemyArr);
 
     Skill* skil  = CreateSkill(renderer,(SDL_Rect){XTABSKILL,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/sword.jpg","images/swordBLACK.jpg",5000,35);
-    Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL1,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/heal.jpg","images/healBLACK.jpg",5000,35);
-    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/ulta.jpg","images/ultaBLACK.jpg",5000,30/*  */);
+    Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL1,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/heal.jpg","images/healBLACK.jpg",10000,35);
+    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/ulta.jpg","images/ultaBLACK.jpg",15000,30);
 
   
     Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "images/hood.png");
@@ -182,13 +182,14 @@ void Game(SDL_Renderer *renderer)
 void intro(SDL_Renderer* renderer){
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
     bool isexit = false;
-    SDL_Event e;
- while (!isexit) {
-        while (SDL_PollEvent(&e) != 0) {
-            ShowEntity(renderer, background);
-        }        
-      
+    Uint32 starttimer = SDL_GetTicks();
+    while (!isexit) {
+        ShowEntity(renderer, background);
+        SDL_RenderPresent(renderer);
         SDL_Delay(1000./fps);
+        if(SDL_GetTicks()-starttimer >=5000){
+            isexit = true;
+        }
     }
 
 
