@@ -1,17 +1,10 @@
 #pragma once
 #ifndef SKILL_H
 #define SKILL_H
-#include "Entity.h"
-typedef enum {
-	ACTIVE,
-	COOLDOWN
-}ButtonState;
+#include "Buttons.h"
 
 typedef struct {
-	SDL_Rect rect;
-	SDL_Texture* active;
-	SDL_Texture* cooldown;
-	ButtonState state;
+	Button* b;
 	Uint32 delta;
 	Uint32 StartCd;
 	Uint32 counter;
@@ -19,8 +12,6 @@ typedef struct {
 	Uint32 lastTimerUpdate;
 	int manacost;
 }Skill;
-
-
 
 Skill* CreateSkill(SDL_Renderer* r, SDL_Rect rect, const char* apath, const char* cpath,Uint32 delta,int manacost);
 
