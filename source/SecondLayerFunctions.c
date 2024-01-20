@@ -15,24 +15,7 @@ bool isnearperson(Person* p,  SDL_Point mousecords) {
     return false;
 }
 
-void Init(SDL_Window *w, SDL_Renderer *r)
-{
-    SDL_Init(SDL_INIT_VIDEO);
-    IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
-    TTF_Init();
-    SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
-    w = SDL_CreateWindow("Forest", 0, 0, SCREENWIDTH, SCREENHEIGHT, SDL_WINDOW_OPENGL);
-    r = SDL_CreateRenderer(w, -1, SDL_RENDERER_ACCELERATED);
-}
 
-void Quit(SDL_Window *w, SDL_Renderer *r)
-{
-    	SDL_DestroyWindow(w);
-        SDL_DestroyRenderer(r);
-        SDL_Quit();
-        TTF_Quit();
-        IMG_Quit();
-}
 
 void Game(SDL_Renderer *renderer)
 {
@@ -83,21 +66,21 @@ void Game(SDL_Renderer *renderer)
                     break;
                 case SDLK_q:
            
-                        if(skil->state == ACTIVE && TOLIK->stats.mana>= skil->manacost){
+                        if(skil->b->state == STATE1 && TOLIK->stats.mana>= skil->manacost){
                             PressSkill(skil);
                             DecrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil->manacost);
                         }
                     break;
                 case SDLK_w:
-                    if(skil1->state == ACTIVE && TOLIK->stats.mana>= skil1->manacost){
+                    if(skil1->b->state == STATE1 && TOLIK->stats.mana>= skil1->manacost){
                             PressSkill(skil1);
                             DecrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil1->manacost);
                         }
                     break;
                 case SDLK_e:
-                    if(skil2->state == ACTIVE&& TOLIK->stats.mana>= skil2->manacost){
+                    if(skil2->b->state == STATE1&& TOLIK->stats.mana>= skil2->manacost){
                             PressSkill(skil2);
                             DecrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil2->manacost);

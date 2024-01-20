@@ -8,7 +8,7 @@ Button* CreateButton(SDL_Renderer* r, SDL_Rect rect, const char* state1path, con
 	return button;
 }
 
-bool CheckEntity(SDL_Point* mousecords, SDL_Rect* rect) {
+bool CheckButton(SDL_Point* mousecords, SDL_Rect* rect) {
 	return SDL_PointInRect(mousecords, rect);
 }
 
@@ -18,7 +18,7 @@ void DestroyButton(Button* button) {
 	free(button);
 }
 
-void SwitchState(Button* h)
+void SwitchButtonState(Button* h)
 {
 	switch (h->state) {
 	case STATE1:

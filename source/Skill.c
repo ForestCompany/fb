@@ -4,11 +4,8 @@
 Skill* CreateSkill(SDL_Renderer* r, SDL_Rect rect, const char* apath, const char* cpath,Uint32 delta,int manacost)
 {
 	Skill* s = (Skill*)malloc(sizeof(Skill));
-	s->rect = rect;
-	s->active = CreateTextureFromImg(r, apath);
-	s->cooldown = CreateTextureFromImg(r, cpath);
+	s->b = CreateButton(r,rect,apath,cpath);
 	s->delta = delta;
-	s->state = ACTIVE;
 	s->counter = s->delta/1000;
 	s->manacost = manacost;
 	char str[4];
@@ -19,32 +16,28 @@ Skill* CreateSkill(SDL_Renderer* r, SDL_Rect rect, const char* apath, const char
 }
 
 void ShowSkill(SDL_Renderer* r, Skill* s) {
-	switch (s->state) {
-		case ACTIVE: SDL_RenderCopy(r,s->active,0,&s->rect); break;
-		case COOLDOWN: SDL_RenderCopy(r,s->cooldown,0,&s->rect); ShowEntity(r, s->timer); break;
+	ShowButton(r,s->b);
+	if(s->b->state == STATE2){
+		ShowEntity(r,s->timer);
 	}
 }
 
 void DestroySkill(Skill* s) {
-	SDL_DestroyTexture(s->active);
-	SDL_DestroyTexture(s->cooldown);
+	DestroyButton(s->b);
 	DestroyEntity(s->timer);
 	free(s);
 }
 
-void SwitchState(Skill* h)
+void SwitchSkillState(Skill* h)
 {
-	switch (h->state) {
-		case ACTIVE:h->state = COOLDOWN; break;
-		case COOLDOWN:h->state = ACTIVE; break;
-	}
+	SwitchButtonState(h->b);
 }
 
 void UpdateSkill(SDL_Renderer* r, Skill* b)
 {
 	Uint32 currentTime = SDL_GetTicks();
 
-	if (b->state == COOLDOWN) {
+	if (b->b->state == STATE2) {
 		
 		if (currentTime - b->lastTimerUpdate >= 1000) {
 			char str[4];
@@ -61,7 +54,7 @@ void UpdateSkill(SDL_Renderer* r, Skill* b)
 		}
 
 		if (currentTime - b->StartCd >= b->delta) {
-			SwitchState(b);
+			SwitchSkillState(b);
 			b->counter = 0;
 		}
 	}
@@ -69,7 +62,7 @@ void UpdateSkill(SDL_Renderer* r, Skill* b)
 
 void PressSkill(Skill* b)
 {
-	SwitchState(b);
+	SwitchSkillState(b);
 	b->StartCd = SDL_GetTicks();
 	b->counter = b->delta / 1000;	
 }

@@ -17,8 +17,8 @@ typedef struct {
 } Button;
 
 Button* CreateButton(SDL_Renderer* r, SDL_Rect rect, const char* state1path, const char* state2path);
-bool CheckEntity(SDL_Point* mousecords, SDL_Rect* rect);
+bool CheckButton(SDL_Point* mousecords, SDL_Rect* rect);
 void DestroyButton(Button* button);
-void SwitchState(Button* h);
+void SwitchButtonState(Button* h);
 void ShowButton(SDL_Renderer* r, Button* button);
 #endif // BUTTON_H
