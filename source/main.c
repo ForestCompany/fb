@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
     window = SDL_CreateWindow("Forest", 0, 0, SCREENWIDTH, SCREENHEIGHT, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
+    intro(renderer);
 	Game(renderer);
     SDL_DestroyWindow(window);
         SDL_DestroyRenderer(renderer);

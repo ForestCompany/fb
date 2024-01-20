@@ -179,6 +179,21 @@ void Game(SDL_Renderer *renderer)
 
 }
 
+void intro(SDL_Renderer* renderer){
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
+    bool isexit = false;
+    SDL_Event e;
+ while (!isexit) {
+        while (SDL_PollEvent(&e) != 0) {
+            ShowEntity(renderer, background);
+        }        
+      
+        SDL_Delay(1000./fps);
+    }
+
+
+    DestroyEntity(background);
+}
 // typeoftile gettype(Map* map, int x, int y) {
 //     // for (int i = 0; i < 6; i++) {
 
