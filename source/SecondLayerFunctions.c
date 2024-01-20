@@ -45,8 +45,8 @@ void Game(SDL_Renderer *renderer)
 
     SDL_Texture* bufferTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREENWIDTH, SCREENHEIGHT);
     SDL_SetRenderTarget(renderer, bufferTexture);
-
     SDL_Event e;
+
     bool isexit = false;
 
     while (!isexit) {
@@ -195,32 +195,37 @@ void Game(SDL_Renderer *renderer)
 
 //     DestroyEntity(background);
 // }
-void intro(SDL_Renderer* renderer){
+void intro(SDL_Renderer* renderer) {
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
     int alpha = 255;
     bool isexit = false;
-    SDL_Event event;
- while (alpha > 0 && !isexit) {
-    while (SDL_PollEvent(&event) != 0) {
-        switch (event.type) {
-            case SDL_QUIT: 
+    SDL_Event e;
+
+    while (alpha > 0 && !isexit) {
+        // Обработка событий
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_KEYDOWN) {
                 isexit = true;
-                break;
+            }
         }
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderClear(renderer);
-    ShowEntity(renderer, background);
-    SDL_RenderPresent(renderer);
-    SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(background->text, alpha);
-    alpha -= 1;
-    SDL_Delay(1000./fps);
+
+        SDL_SetRenderDrawColor(renderer, 0,0,0,0);
+        SDL_RenderClear(renderer);
+        ShowEntity(renderer, background);
+        SDL_RenderPresent(renderer);
+
+        SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(background->text, alpha--);
+
+        // Задержка перемещена в конец цикла
+        SDL_Delay(1000. / fps);
     }
- }
+
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
 }
+
 // typeoftile gettype(Map* map, int x, int y) {
 //     // for (int i = 0; i < 6; i++) {
 
