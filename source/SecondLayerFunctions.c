@@ -179,20 +179,46 @@ void Game(SDL_Renderer *renderer)
 
 }
 
+// void intro(SDL_Renderer* renderer){
+//     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
+//     bool isexit = false;
+//     Uint32 starttimer = SDL_GetTicks();
+//     while (!isexit) {
+//         ShowEntity(renderer, background);
+//         SDL_RenderPresent(renderer);
+//         SDL_Delay(1000./fps);
+//         if(SDL_GetTicks()-starttimer >=5000){
+//             isexit = true;
+//         }
+//     }
+
+
+//     DestroyEntity(background);
+// }
 void intro(SDL_Renderer* renderer){
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
+    int alpha = 255;
     bool isexit = false;
-    Uint32 starttimer = SDL_GetTicks();
-    while (!isexit) {
-        ShowEntity(renderer, background);
-        SDL_RenderPresent(renderer);
-        SDL_Delay(1000./fps);
-        if(SDL_GetTicks()-starttimer >=5000){
-            isexit = true;
+    SDL_Event event;
+ while (alpha > 0 && !isexit) {
+    while (SDL_PollEvent(&event) != 0) {
+        switch (event.type) {
+            case SDL_QUIT: 
+                isexit = true;
+                break;
         }
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
+    ShowEntity(renderer, background);
+    SDL_RenderPresent(renderer);
+    SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(background->text, alpha);
+    alpha -= 1;
+    SDL_Delay(1000./fps);
     }
-
-
+ }
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
     DestroyEntity(background);
 }
 // typeoftile gettype(Map* map, int x, int y) {
