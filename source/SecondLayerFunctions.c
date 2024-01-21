@@ -226,6 +226,49 @@ void intro(SDL_Renderer* renderer) {
     DestroyEntity(background);
 }
 
+void menu(SDL_Renderer* renderer){
+
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/backgroundMenu.png");
+    Button* quitButton = CreateButton(renderer, (SDL_Rect){10, 250, 100, 30}, "images/quitButton.png","images/quitButton2.png");
+    int mousecordsX = 0;
+    int mousecordsY = 0;
+    SDL_Event event;
+    bool isexit = false;
+    while(!isexit){
+        while(SDL_PollEvent(&event)){
+            switch(event.type){
+                case SDL_QUIT:
+                    isexit = true;
+                    break;
+                
+                case SDL_MOUSEBUTTONDOWN:
+                    SDL_GetMouseState(&mousecordsX, &mousecordsY);
+                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &quitButton->rect)){
+                        isexit = true;
+                        break;
+                    }
+                case SDL_MOUSEMOTION:
+                    SDL_GetMouseState(&mousecordsX, &mousecordsY);
+                    
+                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &quitButton->rect)){
+                        quitButton->state = STATE2;
+                    }
+                    else{
+                        quitButton->state = STATE1;
+                    }
+                
+                break;
+            }
+        }
+        ShowEntity(renderer, background);
+        ShowButton(renderer, quitButton);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000. / fps);
+    }
+    SDL_RenderPresent(renderer);
+    DestroyEntity(background);
+    DestroyButton(quitButton);
+}
 // typeoftile gettype(Map* map, int x, int y) {
 //     // for (int i = 0; i < 6; i++) {
 
