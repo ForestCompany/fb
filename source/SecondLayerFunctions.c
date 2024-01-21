@@ -65,7 +65,6 @@ void Game(SDL_Renderer *renderer)
                     isexit = true;
                     break;
                 case SDLK_q:
-           
                         if(skil->b->state == STATE1 && TOLIK->stats.mana>= skil->manacost){
                             PressSkill(skil);
                             DecrementHP(TOLIK,25);
@@ -75,15 +74,18 @@ void Game(SDL_Renderer *renderer)
                 case SDLK_w:
                     if(skil1->b->state == STATE1 && TOLIK->stats.mana>= skil1->manacost){
                             PressSkill(skil1);
-                            DecrementHP(TOLIK,25);
+                            IncrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil1->manacost);
                         }
                     break;
                 case SDLK_e:
                     if(skil2->b->state == STATE1&& TOLIK->stats.mana>= skil2->manacost){
                             PressSkill(skil2);
-                            DecrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil2->manacost);
+                            for(int i = 0;i<ENEMYCOUNT;i++){
+                                DecrementHP(EnemyArr[i],0.6*EnemyArr[i]->stats.hp);
+                                ShowStats(EnemyArr[i]);
+                            }
                         }
                     break;
                 
@@ -107,7 +109,7 @@ void Game(SDL_Renderer *renderer)
                 SDL_GetMouseState(&mousecords.x, &mousecords.y);
                 SDL_Point mapcord = { mousecords.y / TILESIZE, mousecords.x / TILESIZE };
              
-                typeoftile e = GetTypeOFTile(&(map->map[mapcord.y][mapcord.x]));
+                typeoftile e = GetType(map,mapcord,EnemyArr);
 
                 if (isnearperson(TOLIK,  mousecords)) {
                     switch (e) {
@@ -123,8 +125,8 @@ void Game(SDL_Renderer *renderer)
 
                     case ENEMY:
                         printf("ENEMY\n");
-                        // Person* enemy = FindEnemy(mapcord.x, mapcord.y,EnemyArr);
-                        // PVP(TOLIK, enemy);
+                        Person* enemy = FindEnemy(mapcord,EnemyArr);
+                        PVP(TOLIK, enemy);
                         break;
                     }
                 }
@@ -179,6 +181,18 @@ void Game(SDL_Renderer *renderer)
 
 }
 
+Person *FindEnemy(SDL_Point mapcords, Person *EnemyArr[ENEMYCOUNT])
+{
+    for(int i = 0;i<ENEMYCOUNT;i++){
+        int EnemyX = EnemyArr[i]->soul->rect.y / TILESIZE;
+        int EnemyY = EnemyArr[i]->soul->rect.x / TILESIZE;
+        if(mapcords.x == EnemyX && mapcords.y == EnemyY){
+            return EnemyArr[i];
+        }
+    }
+    return NULL;
+}
+
 // void intro(SDL_Renderer* renderer){
 //     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
 //     bool isexit = false;
@@ -199,12 +213,12 @@ void intro(SDL_Renderer* renderer) {
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
     int alpha = 255;
     bool isexit = false;
-    SDL_Event e;
+    SDL_Event x;
 
     while (alpha > 0 && !isexit) {
         // Обработка событий
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_KEYDOWN) {
+        while (SDL_PollEvent(&x)) {
+            if (x.type == SDL_KEYDOWN) {
                 isexit = true;
             }
         }
@@ -224,6 +238,19 @@ void intro(SDL_Renderer* renderer) {
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
+}
+
+typeoftile GetType(Map *map, SDL_Point mouse, Person *EnemyArr[ENEMYCOUNT])
+{
+    
+    for(int i = 0;i<ENEMYCOUNT;i++){
+        int EnemyX = EnemyArr[i]->soul->rect.y / TILESIZE;
+        int EnemyY = EnemyArr[i]->soul->rect.x / TILESIZE;
+        if (mouse.x == EnemyX && mouse.y == EnemyY && EnemyArr[i]->alive == true) {
+            return ENEMY;
+        }
+    }
+    return GetTypeOFTile(&map->map[mouse.y][mouse.x]);
 }
 
 // typeoftile gettype(Map* map, int x, int y) {
