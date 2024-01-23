@@ -229,7 +229,9 @@ void intro(SDL_Renderer* renderer) {
 void menu(SDL_Renderer* renderer){
 
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/backgroundMenu.png");
-    Button* quitButton = CreateButton(renderer, (SDL_Rect){10, 250, 100, 30}, "images/quitButton.png","images/quitButton2.png");
+    Button* quitButton = CreateButton(renderer, (SDL_Rect){30, 260, 100, 50}, "images/quitButton.png","images/quitButton2.png");
+    Button* startButton = CreateButton(renderer, (SDL_Rect){30, 160, 100, 50}, "images/startButton.png","images/startButton2.png");
+    Button* settingsButton = CreateButton(renderer, (SDL_Rect){30, 210, 100, 50}, "images/settingsButton.png","images/settingsButton2.png");
     int mousecordsX = 0;
     int mousecordsY = 0;
     SDL_Event event;
@@ -247,6 +249,14 @@ void menu(SDL_Renderer* renderer){
                         isexit = true;
                         break;
                     }
+                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &startButton->rect)){
+                        isexit = true;
+                        break;
+                    }
+                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &settingsButton->rect)){
+                        isexit = true;
+                        break;
+                    }
                 case SDL_MOUSEMOTION:
                     SDL_GetMouseState(&mousecordsX, &mousecordsY);
                     
@@ -256,12 +266,26 @@ void menu(SDL_Renderer* renderer){
                     else{
                         quitButton->state = STATE1;
                     }
-                
+
+                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &startButton->rect)){
+                        startButton->state = STATE2;
+                    }
+                    else{
+                        startButton->state = STATE1;
+                    }
+                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &settingsButton->rect)){
+                        settingsButton->state = STATE2;
+                    }
+                    else{
+                        settingsButton->state = STATE1;
+                    }
                 break;
             }
         }
         ShowEntity(renderer, background);
         ShowButton(renderer, quitButton);
+        ShowButton(renderer, settingsButton);
+        ShowButton(renderer, startButton);
         SDL_RenderPresent(renderer);
         SDL_Delay(1000. / fps);
     }

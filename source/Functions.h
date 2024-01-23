@@ -44,6 +44,11 @@
 #define XTABSKILL2 ( HDXTABSKILL2 * SCREENWIDTH / 1920) 
 
 //123123123
+typedef enum {
+	START_M,
+	SETTINGS_M,
+    QUIT_M
+}MenuResults;
 
 
 SDL_Texture* CreateTextureFromImg(SDL_Renderer* renderer, const char* path);
