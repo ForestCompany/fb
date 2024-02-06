@@ -34,4 +34,18 @@ void IncrementMana(Person* p, int mana);
 
 void DecrementMana(Person* p, int mana);
 
+int GetX(Person *p);
+
+int GetY(Person *p);
+
+void GrabItem(Person *p, Item *it);
+
+void IncX(Person *p, int x);
+
+void IncY(Person *p, int y);
+
+void ShowInventory(SDL_Renderer *r, Person *p);
+
+void UpdateStats(Person *p, int index);
+
 #endif 

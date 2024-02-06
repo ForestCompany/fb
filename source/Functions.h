@@ -68,4 +68,3 @@ int getwidth(int hp, int cap, int width);
 
 
 #endif // FUNCTIONS_H
-

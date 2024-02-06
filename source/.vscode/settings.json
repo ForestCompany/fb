@@ -13,8 +13,7 @@
         "stats.h": "c",
         "map.h": "c",
         "tile.h": "c",
-        "entity.h": "c",
-        "sdl_mouse.h": "c"
+        "entity.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

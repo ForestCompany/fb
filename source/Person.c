@@ -35,6 +35,13 @@ void ShowPerson(SDL_Renderer* r, Person* p)
 	
 }
 
+
+
+
+
+
+
+
 void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 {
 	char str[20];
@@ -87,10 +94,33 @@ void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 	DestroyEntity(damage);
 }
 
+void UpdateStats(Person *p, int index) {
+    if (p == NULL || p->inventory[index] == NULL || p->stats.power == NULL || p->stats.intellekt == NULL) {
+        // Добавьте обработку нулевых указателей
+        return;
+    }
+	int percenthp = (p->stats.hp ) / p->stats.power->cap;
+	int percentmana = (p->stats.mana) / p->stats.intellekt->cap;
+    // Обновление damage и armor
+    p->stats.damage += p->inventory[index]->stats.damage;
+    p->stats.armor += p->inventory[index]->stats.armor;
+
+    // Обновление power
+    p->stats.power->kolik += p->inventory[index]->stats.hp;
+    p->stats.power->cap = p->stats.power->kolik * p->stats.power->statperatr;
+    p->stats.hp = percenthp * p->stats.power->cap; // Обновление hp на основе процентного соотношения
+
+    // Обновление intellekt
+    p->stats.intellekt->kolik += p->inventory[index]->stats.mana;
+    p->stats.intellekt->cap = p->stats.intellekt->kolik * p->stats.intellekt->statperatr;
+    p->stats.mana = percentmana * p->stats.intellekt->cap; // Обновление mana на основе процентного соотношения
+}
+
+
 
 void ShowStats(Person* p)
 {
-	printf("hp:%d\nmana:%d\ndamage:%d\narmor:%d\n\n",p->stats.hp, p->stats.mana, p->stats.damage, p->stats.armor);
+	printf("hp:%d\nmana:%d\ndamage:%d\narmor:%d\nhp cap:%d\nmana cap:%d\n\n",p->stats.hp, p->stats.mana, p->stats.damage, p->stats.armor, p->stats.power->cap, p->stats.intellekt->cap 		);
 }
 
 void PVP(Person* p1, Person* p2)
@@ -149,3 +179,31 @@ void DecrementMana(Person* p, int mana)
 		p->stats.mana -= mana;
 	}
 }
+
+int GetX(Person *p) {
+	return p->soul->rect.x;
+}
+int GetY(Person *p) {
+	return p->soul->rect.y;
+}
+
+void IncX(Person *p, int x) {
+	p->soul->rect.x += x;
+}
+
+void IncY(Person *p, int y) {
+	p->soul->rect.y += y;
+}
+
+void GrabItem(Person *p, Item *it) {
+	int volnyindex;
+	for(volnyindex = 0; volnyindex < 6; volnyindex++) {
+		if (p->inventory[volnyindex] == 0) {
+			p->inventory[volnyindex] = it;
+			UpdateStats(p, volnyindex);
+			break;
+		}
+	}
+	ShowStats(p);
+}
+

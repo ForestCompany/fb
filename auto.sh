@@ -1,0 +1,3 @@
+rm executable
+make
+./executable
