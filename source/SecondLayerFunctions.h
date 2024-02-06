@@ -5,7 +5,7 @@
 #include "Emanager.h"
 #include "Map.h"
 #include "Skill.h"
-
+#include "Buttons.h"
 
 void FillBufferArr(Map *map, Item ***BufferArr);
 

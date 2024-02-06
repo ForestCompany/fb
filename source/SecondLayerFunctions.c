@@ -246,67 +246,45 @@ int menu(SDL_Renderer* renderer){
     Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, "images/startButton.png","images/startButton2.png");
     Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, BUTTON_WIDTH, BUTTON_HEIGHT}, "images/settingsButton.png","images/settingsButton2.png");
     Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), BUTTON_WIDTH, BUTTON_HEIGHT}, "images/quitButton.png","images/quitButton2.png");
-    char *buttonArray[3] = {startButton, settingsButton, quitButton};
-    int selectedButtonIndex = -1; // Індекс обраної кнопки, початково встановлений на -1 (ні одна кнопка не була обрана)
-
+    Button* buttonArray[] = {
+        startButton,
+        settingsButton,
+        quitButton
+    };
+    int index = -1;
+    int numButtons = sizeof(buttonArray) / sizeof(buttonArray[0]);
     int mousecordsX = 0;
     int mousecordsY = 0;
     SDL_Event event;
     bool isexit = false;
     while(!isexit){
         while(SDL_PollEvent(&event)){
-            switch(event.type){
+            switch(event.type) {
                 case SDL_QUIT:
                     isexit = true;
                     break;
-
-                // case SDL_MOUSEBUTTONDOWN:
-                //     SDL_GetMouseState(&mousecordsX, &mousecordsY);
-                //     for (int i = 0; i < 3; i++) { // Перевіряємо кожну кнопку
-                //          if (CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &(buttonArray[i]->rect))) {
-                //             selectedButtonIndex = i; // Запам'ятовуємо індекс натиснутої кнопки
-                //             isexit = true; // Виходимо з циклу, оскільки кнопка була обрана
-                //             break;
-                //         }
-                //     }
                 
                 case SDL_MOUSEBUTTONDOWN:
                     SDL_GetMouseState(&mousecordsX, &mousecordsY);
-                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &quitButton->rect)){
-                        isexit = true;
-                        break;
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &buttonArray[i]->rect)) {
+                            isexit = true;
+                            index = i;
+                            break;
+                        }
                     }
-                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &startButton->rect)){
-                        isexit = true;
-                        break;
-                    }
-                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &settingsButton->rect)){
-                        isexit = true;
-                        break;
-                    }
+                    break;
+
                 case SDL_MOUSEMOTION:
                     SDL_GetMouseState(&mousecordsX, &mousecordsY);
-                    
-                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &(quitButton->rect))){
-                        quitButton->state = STATE2;
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &buttonArray[i]->rect)) {
+                            buttonArray[i]->state = STATE2;
+                        } else {
+                            buttonArray[i]->state = STATE1;
+                        }
                     }
-                    else{
-                        quitButton->state = STATE1;
-                    }
-
-                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &(startButton->rect))){
-                        startButton->state = STATE2;
-                    }
-                    else{
-                        startButton->state = STATE1;
-                    }
-                    if(CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &(settingsButton->rect))){
-                        settingsButton->state = STATE2;
-                    }
-                    else{
-                        settingsButton->state = STATE1;
-                    }
-                break;
+                    break;
             }
         }
         ShowEntity(renderer, background);
@@ -318,10 +296,11 @@ int menu(SDL_Renderer* renderer){
     }
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
+    DestroyButton(startButton);
+    DestroyButton(settingsButton);
     DestroyButton(quitButton);
-    return selectedButtonIndex;
+    return index;
 }
-
 
 typeoftile GetType(Map *map, SDL_Point mouse, Person *EnemyArr[ENEMYCOUNT])
 {

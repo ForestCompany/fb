@@ -16,12 +16,16 @@ int main(int argc, char* argv[])
     window = SDL_CreateWindow("Forest", 0, 0, SCREENWIDTH, SCREENHEIGHT, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     intro(renderer);
-    menu(renderer);
-	Game(renderer);
-    SDL_DestroyWindow(window);
-        SDL_DestroyRenderer(renderer);
-        SDL_Quit();
-        TTF_Quit();
-        IMG_Quit();
+    int status = menu(renderer);
+    switch(status) {
+        case 0:
+            Game(renderer);
+        case 2:
+            SDL_DestroyWindow(window);
+            SDL_DestroyRenderer(renderer);
+            SDL_Quit();
+            TTF_Quit();
+            IMG_Quit();
+    }
 	return 1;
 }

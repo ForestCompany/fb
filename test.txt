@@ -1,16 +1,29 @@
-int menu(SDL_Renderer* renderer) {
+#include <stdbool.h>
+
+typedef struct {
+    Button* button;
+    int index;
+} ButtonInfo;
+
+void menu(SDL_Renderer* renderer) {
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/backgroundMenu.png");
     Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, "images/startButton.png","images/startButton2.png");
     Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, BUTTON_WIDTH, BUTTON_HEIGHT}, "images/settingsButton.png","images/settingsButton2.png");
     Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), BUTTON_WIDTH, BUTTON_HEIGHT}, "images/quitButton.png","images/quitButton2.png");
     
-    char *buttonArray[3] = {startButton, settingsButton, quitButton};
-    int selectedButtonIndex = -1; // Індекс обраної кнопки, початково встановлений на -1 (ні одна кнопка не була обрана)
+    // Array to store buttons and their corresponding indices
+    ButtonInfo buttonArray[] = {
+        {startButton, 0},
+        {settingsButton, 1},
+        {quitButton, 2}
+    };
+    int numButtons = sizeof(buttonArray) / sizeof(buttonArray[0]);
 
     int mousecordsX = 0;
     int mousecordsY = 0;
     SDL_Event event;
     bool isexit = false;
+
     while (!isexit) {
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
@@ -20,25 +33,35 @@ int menu(SDL_Renderer* renderer) {
                 
                 case SDL_MOUSEBUTTONDOWN:
                     SDL_GetMouseState(&mousecordsX, &mousecordsY);
-                    for (int i = 0; i < 3; i++) { // Перевіряємо кожну кнопку
-                        if (CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &(buttonArray[i]->rect))) {
-                            selectedButtonIndex = i; // Запам'ятовуємо індекс натиснутої кнопки
-                            isexit = true; // Виходимо з циклу, оскільки кнопка була обрана
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &buttonArray[i].button->rect)) {
+                            isexit = true;
+                            printf("Button %d clicked!\n", buttonArray[i].index);
                             break;
+                        }
+                    }
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    SDL_GetMouseState(&mousecordsX, &mousecordsY);
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &buttonArray[i].button->rect)) {
+                            buttonArray[i].button->state = STATE2;
+                        } else {
+                            buttonArray[i].button->state = STATE1;
                         }
                     }
                     break;
             }
         }
+
         ShowEntity(renderer, background);
-        ShowButton(renderer, quitButton);
-        ShowButton(renderer, settingsButton);
-        ShowButton(renderer, startButton);
+        for (int i = 0; i < numButtons; ++i) {
+            ShowButton(renderer, buttonArray[i].button);
+        }
         SDL_RenderPresent(renderer);
         SDL_Delay(1000. / fps);
     }
-    SDL_RenderPresent(renderer);
+
     DestroyEntity(background);
-  
-    return selectedButtonIndex; // Повертаємо індекс обраної кнопки
 }
