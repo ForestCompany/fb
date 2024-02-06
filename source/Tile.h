@@ -8,7 +8,7 @@
 typedef enum {
     GRASS,
     MOUNTAIN,
-    ENEMY
+    ENEMY, 
 } typeoftile;
 
 

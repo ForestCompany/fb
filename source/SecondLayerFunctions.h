@@ -4,12 +4,12 @@
 
 #include "Emanager.h"
 #include "Map.h"
-#include"Skill.h"
+#include "Skill.h"
 
 
+void FillBufferArr(Map *map, Item ***BufferArr);
 
-
-bool isnearperson(Person* p,  SDL_Point mousecords);
+bool IsMouseNearPerson(Person* p,  SDL_Point mousecords);
 
 void Init(SDL_Window* w,SDL_Renderer* r);
 

@@ -13,8 +13,8 @@
 
 
 #define ASPECT 100.
-#define SCREENWIDTH (1280 / (ASPECT / 100))
-#define SCREENHEIGHT (720 / (ASPECT / 100))
+#define SCREENWIDTH (1600 / (ASPECT / 100))
+#define SCREENHEIGHT (900 / (ASPECT / 100))
 #define fps 60  
 #define WIDTHAMOUNT 20
 #define HEIGHTAMOUNT 9

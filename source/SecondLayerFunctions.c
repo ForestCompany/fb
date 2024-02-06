@@ -1,18 +1,13 @@
 #include "SecondLayerFunctions.h"
 
-bool isnearperson(Person* p,  SDL_Point mousecords) {
-    SDL_Point pcords = { p->soul->rect.x / TILESIZE, p->soul->rect.y / TILESIZE };
+bool IsMouseNearPerson(Person* p,  SDL_Point mousecords) {
+    int P_X = GetX(p) / TILESIZE;
+    int P_Y = GetY(p) / TILESIZE;
     mousecords.x = mousecords.x / TILESIZE;
     mousecords.y = mousecords.y / TILESIZE;
-
-    if ((mousecords.x == pcords.x + 1 && mousecords.y == pcords.y) ||
-        (mousecords.x == pcords.x - 1 && mousecords.y == pcords.y) ||
-        (mousecords.x == pcords.x && mousecords.y == pcords.y + 1) ||
-        (mousecords.x == pcords.x && mousecords.y == pcords.y - 1)) {
-        return true;
-    }
-
-    return false;
+    bool isNearHorizontal = P_Y == mousecords.y && abs(mousecords.x - P_X) == 1; 
+    bool isNearVertical = P_X == mousecords.x && abs(mousecords.y - P_Y ) == 1; 
+    return  isNearHorizontal || isNearVertical;
 }
 
 
@@ -24,14 +19,18 @@ void Game(SDL_Renderer *renderer)
     Map* map = CreateMap(renderer, SCREENHEIGHT / TILESIZE - 2, SCREENWIDTH / TILESIZE);
 
     Person* TOLIK = CreatePerson(renderer, TILESIZE, TILESIZE, TILESIZE, TILESIZE, "images/tolik.png");
+   
     Person* EnemyArr[ENEMYCOUNT];
     FillEnemyArr(renderer,EnemyArr);
 
-    Skill* skil  = CreateSkill(renderer,(SDL_Rect){XTABSKILL,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/sword.jpg","images/swordBLACK.jpg",5000,35);
-    Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL1,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/heal.jpg","images/healBLACK.jpg",10000,35);
-    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE},"images/ulta.jpg","images/ultaBLACK.jpg",15000,30);
+    Skill* skil  = CreateSkill(renderer,(SDL_Rect){XTABSKILL,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "images/sword.jpg"," images/swordBLACK.jpg", 5000, 35);
+    Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL1,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "images/heal.jpg", "images/healBLACK.jpg", 10000, 35);
+    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "images/ulta.jpg", "images/ultaBLACK.jpg", 15000, 30);
 
-  
+
+    Item ***BufferArr;
+
+    //Item *item1 = CreateItem(renderer, "item1", TILESIZE * 5, TILESIZE * 5, TILESIZE, TILESIZE, "images/Victoryscreen.png", 1, 1, 1, 1);
     Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "images/hood.png");
 
     SDL_Color color = { 0,0,0,255 };
@@ -40,7 +39,7 @@ void Game(SDL_Renderer *renderer)
 
 
     bool cursor = false;
-
+    bool poshel = false;
     SDL_Point mousecords;
 
     SDL_Texture* bufferTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREENWIDTH, SCREENHEIGHT);
@@ -88,6 +87,12 @@ void Game(SDL_Renderer *renderer)
                             }
                         }
                     break;
+                case SDLK_9:
+                    // if (poshel == false) {
+                    //     GrabItem(TOLIK, item1);
+                    //     poshel = true;
+                    // }
+                    // break;
                 
                 }
                 break;
@@ -96,7 +101,7 @@ void Game(SDL_Renderer *renderer)
                 cursor = false;
                 SDL_GetMouseState(&mousecords.x, &mousecords.y);
 
-                cursor = isnearperson(TOLIK, mousecords);
+                cursor = IsMouseNearPerson(TOLIK, mousecords);
                 if (cursor) {
                     SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND));
                 }
@@ -111,12 +116,13 @@ void Game(SDL_Renderer *renderer)
              
                 typeoftile e = GetType(map,mapcord,EnemyArr);
 
-                if (isnearperson(TOLIK,  mousecords)) {
+                if (IsMouseNearPerson(TOLIK,  mousecords)) {
                     switch (e) {
                     case GRASS:
                         printf("GRASS\n");
                         TOLIK->soul->rect.x = map->map[mapcord.y][mapcord.x].soul->rect.x;
                         TOLIK->soul->rect.y = map->map[mapcord.y][mapcord.x].soul->rect.y;
+                   
                         break;
 
                     case MOUNTAIN:
@@ -137,11 +143,14 @@ void Game(SDL_Renderer *renderer)
         UpdateSkill(renderer,skil);
         UpdateSkill(renderer,skil1);
         UpdateSkill(renderer,skil2);
-    
+        if (SDL_GetTicks() - lastUpdateTime >= 1000 && EnemyArr[5]->alive) {
+            AIEnemy(EnemyArr, TOLIK, 5);
+            lastUpdateTime = SDL_GetTicks();
+        }
         SDL_SetRenderTarget(renderer, bufferTexture);
         ShowMap(renderer, map);
         ShowPerson(renderer, TOLIK);
-      
+        //ShowItem(renderer, item1);
         ShowEntity(renderer, hood);
         ShowEnemyArr(renderer,EnemyArr);
         ShowSkill(renderer,skil);
@@ -154,15 +163,6 @@ void Game(SDL_Renderer *renderer)
         SDL_RenderPresent(renderer);
 
 
-        if (deltaTime >= 1000) {
-            if (TOLIK->stats.hp < TOLIK->stats.power->cap) {
-                TOLIK->stats.hp += TOLIK->stats.power->income;
-            }
-            if(TOLIK->stats.mana < TOLIK->stats.intellekt->cap) {
-                TOLIK->stats.mana += TOLIK->stats.intellekt->income;
-            }
-            lastUpdateTime = currentTime; 
-        }
         
       
         SDL_Delay(1000./fps);
@@ -170,7 +170,7 @@ void Game(SDL_Renderer *renderer)
 
  
     SDL_DestroyTexture(bufferTexture);
-
+    //DestroyItem(item1);
     DestroyPerson(TOLIK);
     DestroyEntity(hood);
     DestroyMap(map);
@@ -184,8 +184,8 @@ void Game(SDL_Renderer *renderer)
 Person *FindEnemy(SDL_Point mapcords, Person *EnemyArr[ENEMYCOUNT])
 {
     for(int i = 0;i<ENEMYCOUNT;i++){
-        int EnemyX = EnemyArr[i]->soul->rect.y / TILESIZE;
-        int EnemyY = EnemyArr[i]->soul->rect.x / TILESIZE;
+        int EnemyX = GetY(EnemyArr[i]) / TILESIZE;
+        int EnemyY = GetX(EnemyArr[i]) / TILESIZE;
         if(mapcords.x == EnemyX && mapcords.y == EnemyY){
             return EnemyArr[i];
         }
@@ -231,7 +231,7 @@ void intro(SDL_Renderer* renderer) {
         SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(background->text, alpha--);
 
-        // Задержка перемещена в конец цикла
+   
         SDL_Delay(1000. / fps);
     }
 
