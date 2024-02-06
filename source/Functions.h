@@ -13,8 +13,8 @@
 
 
 #define ASPECT 100.
-#define SCREENWIDTH (640 / (ASPECT / 100))
-#define SCREENHEIGHT (360 / (ASPECT / 100))
+#define SCREENWIDTH (1600 / (ASPECT / 100))
+#define SCREENHEIGHT (900 / (ASPECT / 100))
 #define fps 60  
 #define WIDTHAMOUNT 20
 #define HEIGHTAMOUNT 9
@@ -43,12 +43,18 @@
 #define XTABSKILL1 ( HDXTABSKILL1 * SCREENWIDTH / 1920) 
 #define XTABSKILL2 ( HDXTABSKILL2 * SCREENWIDTH / 1920) 
 
+//FOR BUTTONS
+#define BUTTON_X_PERCENTAGE 8 // Відсоток від лівого краю екрану для першої кнопки
+#define BUTTON_Y_PERCENTAGE 60 // Відсоток від верхнього краю екрану для першої кнопки
+#define BUTTON_WIDTH_PERCENTAGE 20 // Відсоток ширини екрану для кнопки
+#define BUTTON_HEIGHT_PERCENTAGE 10 // Відсоток висоти екрану для кнопки
+#define BUTTON_Y_PADDING_PERCENTAGE 12 // Відступ між кнопками
+#define BUTTON_X (SCREENWIDTH * BUTTON_X_PERCENTAGE / 100)
+#define BUTTON_Y (SCREENHEIGHT * BUTTON_Y_PERCENTAGE / 100)
+#define BUTTON_WIDTH (SCREENWIDTH * BUTTON_WIDTH_PERCENTAGE / 100)
+#define BUTTON_HEIGHT (SCREENHEIGHT * BUTTON_HEIGHT_PERCENTAGE / 100)
+
 //123123123
-typedef enum {
-	START_M,
-	SETTINGS_M,
-    QUIT_M
-}MenuResults;
 
 
 SDL_Texture* CreateTextureFromImg(SDL_Renderer* renderer, const char* path);
@@ -62,3 +68,4 @@ int getwidth(int hp, int cap, int width);
 
 
 #endif // FUNCTIONS_H
+
