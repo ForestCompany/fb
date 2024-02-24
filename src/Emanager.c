@@ -9,13 +9,26 @@ void FillEnemyArr(SDL_Renderer *r, Person *n[ENEMYCOUNT])
 
 Person *CreateEnemy(SDL_Renderer *r, enemy_t e) {
     Person *res = NULL;
+    Item *it = NULL;
     switch (e) {
-        case e1: res = CreatePerson(r,TILESIZE*2,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag1.png"); SetFullStats(res, 5, 5, 5, 5); break;
-        case e2: res = CreatePerson(r,TILESIZE*3,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag2.png"); SetFullStats(res, 5, 5, 5, 5); break;
-        case e3: res = CreatePerson(r,TILESIZE*4,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag3.png"); SetFullStats(res, 5, 5, 5, 5); break;
-        case e4: res = CreatePerson(r,TILESIZE*5,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag4.png"); SetFullStats(res, 5, 5, 5, 5); break;
-        case e5: res = CreatePerson(r,TILESIZE*6,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag5.png"); SetFullStats(res, 5, 5, 5, 5); break;
-        case e6: res = CreatePerson(r,TILESIZE*7,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag6.png"); SetFullStats(res, 5, 5, 5, 5); break;
+        case e1: res = CreatePerson(r,TILESIZE*2,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag1.png"); SetFullStats(res, 5, 5, 5, 5); 
+        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/sword.jpg",5,5,5,5); 
+        res->inventory[0] = it; break;
+        case e2: res = CreatePerson(r,TILESIZE*3,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag2.png"); SetFullStats(res, 5, 5, 5, 5); 
+        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/hood.png",5,5,5,5); 
+        res->inventory[0] = it;  break;
+        case e3: res = CreatePerson(r,TILESIZE*4,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag3.png"); SetFullStats(res, 5, 5, 5, 5);
+        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/deathscreen.png",5,5,5,5); 
+        res->inventory[0] = it;  break;
+        case e4: res = CreatePerson(r,TILESIZE*5,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag4.png"); SetFullStats(res, 5, 5, 5, 5); 
+        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/tolik.png",5,5,5,5); 
+        res->inventory[0] = it;  break;
+        case e5: res = CreatePerson(r,TILESIZE*6,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag5.png"); 
+        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/Victoryscreen.png",5,5,5,5); 
+        res->inventory[0] = it; break;
+        case e6: res = CreatePerson(r,TILESIZE*7,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag6.png"); SetFullStats(res, 5, 5, 5, 5); 
+        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/tile.png",5,5,5,5); 
+        res->inventory[0] = it;  break;
         default: res = NULL; break;
     }
     return res;

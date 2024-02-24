@@ -91,11 +91,7 @@ void Game(SDL_Renderer *renderer)
                         }
                     break;
                 case SDLK_9:
-                    // if (poshel == false) {
-                    //     GrabItem(TOLIK, item1);
-                    //     poshel = true;
-                    // }
-                    // break;
+                      Mix_PlayChannel(-1, footstepSound, 0);
                 
                 }
                 break;

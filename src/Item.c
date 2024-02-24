@@ -19,5 +19,7 @@ void DestroyItem(Item* i) {
 }
 
 void ShowItem(SDL_Renderer *r, Item *i) {
-    ShowEntity(r, i->soul);
+    
+        ShowEntity(r, i->soul);
+    
 }
