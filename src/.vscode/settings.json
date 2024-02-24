@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "skill.h": "c"
+        "skill.h": "c",
+        "secondlayerfunctions.h": "c",
+        "sound.h": "c"
     }
 }

@@ -10,6 +10,7 @@
 #include <SDL2/SDL_mouse.h>
 #include <stdio.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 
 
 #define ASPECT 100.

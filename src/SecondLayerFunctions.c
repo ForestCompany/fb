@@ -14,6 +14,9 @@ bool IsMouseNearPerson(Person* p,  SDL_Point mousecords) {
 
 void Game(SDL_Renderer *renderer)
 {
+    Mix_Chunk *footstepSound = Mix_LoadWAV("resource/sounds/Z.wav");
+
+
     Uint32 lastUpdateTime = 0;
 
     Map* map = CreateMap(renderer, SCREENHEIGHT / TILESIZE - 2, SCREENWIDTH / TILESIZE);
@@ -64,21 +67,21 @@ void Game(SDL_Renderer *renderer)
                     isexit = true;
                     break;
                 case SDLK_q:
-                        if(skil->b->state == STATE1 && TOLIK->stats.mana>= skil->manacost){
+                        if(skil->b->state == STATE1 && TOLIK->stats.mana>= skil->manacost) {
                             PressSkill(skil);
                             DecrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil->manacost);
                         }
                     break;
                 case SDLK_w:
-                    if(skil1->b->state == STATE1 && TOLIK->stats.mana>= skil1->manacost){
+                    if(skil1->b->state == STATE1 && TOLIK->stats.mana>= skil1->manacost) {
                             PressSkill(skil1);
                             IncrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil1->manacost);
                         }
                     break;
                 case SDLK_e:
-                    if(skil2->b->state == STATE1&& TOLIK->stats.mana>= skil2->manacost){
+                    if(skil2->b->state == STATE1 && TOLIK->stats.mana>= skil2->manacost) {
                             PressSkill(skil2);
                             DecrementMana(TOLIK,skil2->manacost);
                             for(int i = 0;i<ENEMYCOUNT;i++){
@@ -122,6 +125,8 @@ void Game(SDL_Renderer *renderer)
                         printf("GRASS\n");
                         TOLIK->soul->rect.x = map->map[mapcord.y][mapcord.x].soul->rect.x;
                         TOLIK->soul->rect.y = map->map[mapcord.y][mapcord.x].soul->rect.y;
+                        Mix_Volume(-1, MIX_MAX_VOLUME);
+                        Mix_PlayChannel(-1, footstepSound, 0);
                    
                         break;
 
