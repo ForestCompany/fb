@@ -1,4 +1,4 @@
-#include "Map.h"
+#include "../inc/Map.h"
 
 
 
@@ -21,11 +21,11 @@ Map* CreateMap(SDL_Renderer* renderer, int width, int height)
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             if (i == 0 || j == 0 || i == height - 1 || j == width - 1) {
-                path = "images/Mountains.png";
+                path = "resource/images/Mountains.png";
                 type = MOUNTAIN;
             }
             else {
-                path = "images/tile.png";
+                path = "resource/images/tile.png";
                 type = GRASS;
             }
             mp->map[i][j].soul = CreateEntity(renderer, i * TILESIZE, j * TILESIZE, TILESIZE, TILESIZE, path);

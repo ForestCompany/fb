@@ -1,4 +1,4 @@
-#include "Person.h"
+#include "../inc/Person.h"
 
 Person* CreatePerson(SDL_Renderer* r,int x, int y, int width, int height, const char* path) {
 	Person* p = (Person*)malloc(sizeof(Person));
@@ -64,22 +64,22 @@ void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 
 
 	sprintf(str, "%d", p->stats.hp);
-	Entity* hp = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPBAR, 60, HEIGHTBAR, "fonts/Minecraft.ttf", str, 120, color);
+	Entity* hp = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPBAR, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 
 	sprintf(str, "%d", p->stats.mana);
-	Entity* mana = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPMANA, 60, HEIGHTBAR, "fonts/Minecraft.ttf", str, 120, color);
+	Entity* mana = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPMANA, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 
 	sprintf(str,  "%d", p->stats.armor);
-	Entity* armor = CreateEntityTTF(r, XTABFORBAR , TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "fonts/Minecraft.ttf", str, 120, color);
+	Entity* armor = CreateEntityTTF(r, XTABFORBAR , TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 
 	sprintf(str,  "%d", p->stats.damage);
-	Entity* damage = CreateEntityTTF(r, XTABFORBAR + 100, TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "fonts/Minecraft.ttf", str, 120, color);
+	Entity* damage = CreateEntityTTF(r, XTABFORBAR + 100, TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 	ShowEntity(r, hp);
@@ -92,6 +92,20 @@ void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 	DestroyEntity(mana);
 	DestroyEntity(armor);
 	DestroyEntity(damage);
+}
+
+void SetFullStats(Person *p, int npower, int nintellekt, int armor, int damage)
+{
+	p->stats.armor = armor;
+	p->stats.damage = damage;
+
+	p->stats.power->kolik = npower;
+	p->stats.power->cap = npower * p->stats.power->statperatr;
+	p->stats.hp = p->stats.power->cap;
+
+	p->stats.intellekt->kolik = nintellekt;
+	p->stats.intellekt->cap = nintellekt * p->stats.intellekt->statperatr;
+	p->stats.mana = p->stats.intellekt->cap;
 }
 
 void UpdateStats(Person *p, int index) {

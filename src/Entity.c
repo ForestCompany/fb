@@ -1,4 +1,4 @@
-#include "Entity.h"
+#include "../inc/Entity.h"
 
 
 Entity* CreateEntity(SDL_Renderer* renderer,int x, int y, int width, int height, const char* path)

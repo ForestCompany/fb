@@ -4,6 +4,15 @@
 #include"Person.h"
 #define ENEMYCOUNT 6
 
+typedef enum enemy_e {
+    e1,
+    e2,
+    e3,
+    e4,
+    e5,
+    e6,
+}           enemy_t;
+Person *CreateEnemy(SDL_Renderer *r, enemy_t e);
 
 void FillEnemyArr(SDL_Renderer* r,Person* n[ENEMYCOUNT]);
 

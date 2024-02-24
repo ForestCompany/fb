@@ -1,4 +1,4 @@
-#include "Attributes.h"
+#include "../inc/Attributes.h"
 
 Atribute* CreateAtribute(int kolik,int statperatr,  int income)
 {

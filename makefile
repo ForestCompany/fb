@@ -2,7 +2,7 @@ CC := gcc
 CFLAGS := -std=gnu17 -Wall
 LIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lm
 
-SRC_DIR := source
+SRC_DIR := src
 EXECUTABLE := executable
 
 SOURCES := $(wildcard $(SRC_DIR)/*.c)
