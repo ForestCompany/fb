@@ -30,8 +30,10 @@ void Game(SDL_Renderer *renderer)
     Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/ulta.jpg", "resource/images/ultaBLACK.jpg", 15000, 30);
 
 
-
-
+    card_t *card1 = CreateCard(renderer, XTABCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/karta.jpg");
+    card_t *card2 = CreateCard(renderer, XTABCARD + WIDTHCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/karta.jpg");
+    card_t *card3 = CreateCard(renderer, XTABCARD + WIDTHCARD * 2, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/karta.jpg");
+    bool PointedKarta = false;
     //Item *item1 = CreateItem(renderer, "item1", TILESIZE * 5, TILESIZE * 5, TILESIZE, TILESIZE, "images/Victoryscreen.png", 1, 1, 1, 1);
     Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "resource/images/hood.png");
 
@@ -83,7 +85,7 @@ void Game(SDL_Renderer *renderer)
                     if(skil2->b->state == STATE1 && TOLIK->stats.mana>= skil2->manacost) {
                             PressSkill(skil2);
                             DecrementMana(TOLIK,skil2->manacost);
-                            for(int i = 0;i<ENEMYCOUNT;i++) {
+                            for(int i = 0; i<ENEMYCOUNT;i++) {
                                 DecrementHP(EnemyArr[i],0.6*EnemyArr[i]->stats.hp);
                             }
                         }
@@ -104,6 +106,9 @@ void Game(SDL_Renderer *renderer)
                 else {
                     SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
                 }
+                CheckPointed(card1, skil, mousecords);
+                CheckPointed(card2, skil1, mousecords);
+                CheckPointed(card3, skil2, mousecords);
                 break;
 
             case SDL_MOUSEBUTTONDOWN: {
@@ -144,18 +149,22 @@ void Game(SDL_Renderer *renderer)
             AIEnemy(EnemyArr, TOLIK);
             lastUpdateTime = SDL_GetTicks();
         }
-        // if (SDL_GetTicks() - lastUpdateTime >= 1000 && NOMERVRAGA < 6) {
-        //     EnemyArr[NOMERVRAGA++]->alive = true;
-        //     lastUpdateTime = SDL_GetTicks();
-        // }
+        if (SDL_GetTicks() - lastUpdateTime >= 1000 && NOMERVRAGA < 6) {
+            EnemyArr[NOMERVRAGA++]->alive = true;
+            lastUpdateTime = SDL_GetTicks();
+        }
         SDL_SetRenderTarget(renderer, bufferTexture);
         ShowMap(renderer, map);
         ShowPerson(renderer, TOLIK);
         ShowEntity(renderer, hood);
         ShowEnemyArr(renderer,EnemyArr);
+        ShowCard(renderer, card1);
+        ShowCard(renderer, card2);
+        ShowCard(renderer, card3);
         ShowSkill(renderer,skil);
         ShowSkill(renderer,skil1);
         ShowSkill(renderer,skil2);
+        
         ShowFontStats(renderer,TOLIK, color);
       
         SDL_SetRenderTarget(renderer, NULL);
@@ -174,6 +183,9 @@ void Game(SDL_Renderer *renderer)
     DestroyEntity(hood);
     DestroyMap(map);
     DestroyEnemyArr(EnemyArr);
+    DestroyCard(card1);
+    DestroyCard(card2);
+    DestroyCard(card3);
     DestroySkill(skil);
     DestroySkill(skil1);
     DestroySkill(skil2);
