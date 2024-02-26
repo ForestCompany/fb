@@ -7,7 +7,7 @@
 typedef enum {
 	STATE1,
 	STATE2
-}ButtonState;
+} ButtonState;
 
 typedef struct {
 	SDL_Rect rect;

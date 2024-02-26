@@ -78,7 +78,7 @@
 #define HDHEIGHTSLOT 98
 #define HEIGHTSLOT (HDHEIGHTSLOT * SCREENHEIGHT / 1080)
 
-//FOR BUTTONS
+//FOR BUTTONS IN MENU
 #define BUTTON_X_PERCENTAGE 8 // Відсоток від лівого краю екрану для першої кнопки
 #define BUTTON_Y_PERCENTAGE 60 // Відсоток від верхнього краю екрану для першої кнопки
 #define BUTTON_WIDTH_PERCENTAGE 20 // Відсоток ширини екрану для кнопки
