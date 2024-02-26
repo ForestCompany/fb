@@ -155,9 +155,12 @@ void PVP(Person* p1, Person* p2)
 {
 	/*p2->stats.hp -= p1->stats.damage - p2->stats.armor;
 	p1->stats.hp -= p2->stats.damage - p1->stats.armor;*/
-	
-	DecrementHP(p2, p1->stats.damage - p2->stats.armor);
-	DecrementHP(p1, p2->stats.damage - p1->stats.armor);
+	int uron1 = p1->stats.damage - p2->stats.armor;
+	if (uron1 < 0) uron1 = 0;
+	DecrementHP(p2, uron1);
+	int uron2 = p2->stats.damage - p1->stats.armor;
+	if (uron2 < 0) uron2 = 0;
+	DecrementHP(p1, uron2);
 
 	if (p1->stats.hp <= 0) {
 		p1->alive = false;
@@ -212,6 +215,25 @@ void DecrementMana(Person* p, int mana)
 	}
 }
 
+bool IsOnDiagonal(Person *centr, Person *satelit) {
+	int centr_x = GetX(centr) / TILESIZE;
+	int centr_y = GetY(centr) / TILESIZE;
+	int satelit_x = GetX(satelit) / TILESIZE;
+	int satelit_y = GetY(satelit) / TILESIZE;
+    int dx = abs(centr_x - satelit_x);
+    int dy = abs(centr_y - satelit_y);
+    return dx == 1 && dy == 1;
+}
+
+void FindCommonPoints(SDL_Point* mas, Person* p1, Person *p2) {
+	SDL_Point p1_c = {GetY(p1) / TILESIZE, GetX(p1) / TILESIZE};
+	SDL_Point p2_c = {GetY(p2) / TILESIZE, GetX(p2) / TILESIZE};
+	mas[0].y = p2_c.x;
+	mas[0].x = p1_c.y;
+	mas[1].y = p1_c.x;
+	mas[1].x = p2_c.y;
+}
+
 int GetX(Person *p) {
 	return p->soul->rect.x;
 }
@@ -225,6 +247,11 @@ void IncX(Person *p, int x) {
 
 void IncY(Person *p, int y) {
 	p->soul->rect.y += y;
+}
+
+void Move(Person* p, SDL_Point point) {
+	p->soul->rect.x = point.x * TILESIZE;
+	p->soul->rect.y = point.y * TILESIZE;
 }
 
 void GrabItem(Person *p, Item *it) {
@@ -261,7 +288,6 @@ void GrabItem(Person *p, Item *it) {
             break;
         }
     }
-    ShowStats(p);
 }
 
 

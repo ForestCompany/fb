@@ -16,13 +16,12 @@ void Game(SDL_Renderer *renderer)
 {
     Mix_Chunk *footstepSound = Mix_LoadWAV("resource/sounds/Z.wav");
 
-
+    int NOMERVRAGA = 0;
     Uint32 lastUpdateTime = 0;
 
     Map* map = CreateMap(renderer, SCREENHEIGHT / TILESIZE - 2, SCREENWIDTH / TILESIZE);
 
     Person* TOLIK = CreatePerson(renderer, TILESIZE, TILESIZE, TILESIZE, TILESIZE, "resource/images/tolik.png");
-    TOLIK->stats.armor += 1;
     Person* EnemyArr[ENEMYCOUNT];
     FillEnemyArr(renderer,EnemyArr);
 
@@ -31,7 +30,7 @@ void Game(SDL_Renderer *renderer)
     Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/ulta.jpg", "resource/images/ultaBLACK.jpg", 15000, 30);
 
 
-    Item ***BufferArr;
+
 
     //Item *item1 = CreateItem(renderer, "item1", TILESIZE * 5, TILESIZE * 5, TILESIZE, TILESIZE, "images/Victoryscreen.png", 1, 1, 1, 1);
     Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "resource/images/hood.png");
@@ -84,15 +83,13 @@ void Game(SDL_Renderer *renderer)
                     if(skil2->b->state == STATE1 && TOLIK->stats.mana>= skil2->manacost) {
                             PressSkill(skil2);
                             DecrementMana(TOLIK,skil2->manacost);
-                            for(int i = 0;i<ENEMYCOUNT;i++){
+                            for(int i = 0;i<ENEMYCOUNT;i++) {
                                 DecrementHP(EnemyArr[i],0.6*EnemyArr[i]->stats.hp);
-                                ShowStats(EnemyArr[i]);
                             }
                         }
                     break;
                 case SDLK_9:
                       Mix_PlayChannel(-1, footstepSound, 0);
-                
                 }
                 break;
 
@@ -121,7 +118,6 @@ void Game(SDL_Renderer *renderer)
                         printf("GRASS\n");
                         TOLIK->soul->rect.x = map->map[mapcord.y][mapcord.x].soul->rect.x;
                         TOLIK->soul->rect.y = map->map[mapcord.y][mapcord.x].soul->rect.y;
-                        Mix_Volume(-1, MIX_MAX_VOLUME);
                         Mix_PlayChannel(-1, footstepSound, 0);
                    
                         break;
@@ -144,14 +140,17 @@ void Game(SDL_Renderer *renderer)
         UpdateSkill(renderer,skil);
         UpdateSkill(renderer,skil1);
         UpdateSkill(renderer,skil2);
-        if (SDL_GetTicks() - lastUpdateTime >= 1000 && EnemyArr[5]->alive) {
-            AIEnemy(EnemyArr, TOLIK, 5);
+        if (SDL_GetTicks() - lastUpdateTime >= 500) {
+            AIEnemy(EnemyArr, TOLIK);
             lastUpdateTime = SDL_GetTicks();
         }
+        // if (SDL_GetTicks() - lastUpdateTime >= 1000 && NOMERVRAGA < 6) {
+        //     EnemyArr[NOMERVRAGA++]->alive = true;
+        //     lastUpdateTime = SDL_GetTicks();
+        // }
         SDL_SetRenderTarget(renderer, bufferTexture);
         ShowMap(renderer, map);
         ShowPerson(renderer, TOLIK);
-        //ShowItem(renderer, item1);
         ShowEntity(renderer, hood);
         ShowEnemyArr(renderer,EnemyArr);
         ShowSkill(renderer,skil);
@@ -171,7 +170,6 @@ void Game(SDL_Renderer *renderer)
 
  
     SDL_DestroyTexture(bufferTexture);
-    //DestroyItem(item1);
     DestroyPerson(TOLIK);
     DestroyEntity(hood);
     DestroyMap(map);
@@ -182,34 +180,9 @@ void Game(SDL_Renderer *renderer)
 
 }
 
-Person *FindEnemy(SDL_Point mapcords, Person *EnemyArr[ENEMYCOUNT])
-{
-    for(int i = 0;i<ENEMYCOUNT;i++){
-        int EnemyX = GetY(EnemyArr[i]) / TILESIZE;
-        int EnemyY = GetX(EnemyArr[i]) / TILESIZE;
-        if(mapcords.x == EnemyX && mapcords.y == EnemyY){
-            return EnemyArr[i];
-        }
-    }
-    return NULL;
-}
-
-// void intro(SDL_Renderer* renderer){
-//     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
-//     bool isexit = false;
-//     Uint32 starttimer = SDL_GetTicks();
-//     while (!isexit) {
-//         ShowEntity(renderer, background);
-//         SDL_RenderPresent(renderer);
-//         SDL_Delay(1000./fps);
-//         if(SDL_GetTicks()-starttimer >=5000){
-//             isexit = true;
-//         }
-//     }
 
 
-//     DestroyEntity(background);
-// }
+
 void intro(SDL_Renderer* renderer) {
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/intro.png");
     int alpha = 255;
@@ -254,16 +227,11 @@ typeoftile GetType(Map *map, SDL_Point mouse, Person *EnemyArr[ENEMYCOUNT])
     return GetTypeOFTile(&map->map[mouse.y][mouse.x]);
 }
 
-// typeoftile gettype(Map* map, int x, int y) {
-//     // for (int i = 0; i < 6; i++) {
 
-//     //     int EnemyX = EnemyArr[i]->soul->rect.y / TILESIZE;
-//     //     int EnemyY = EnemyArr[i]->soul->rect.x / TILESIZE;
-//     //     if (x == EnemyX && y == EnemyY && EnemyArr[i]->alive == true) {
-//     //         return ENEMY;
-//     //     }
-//     // }
-//     typeoftile e = map->map[y][x].type;
-//     return e;
 
-// }
+
+
+
+
+
+
