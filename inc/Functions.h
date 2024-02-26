@@ -79,6 +79,16 @@
 #define HEIGHTSLOT (HDHEIGHTSLOT * SCREENHEIGHT / 1080)
 //123123123
 
+#define BUTTON_X_PERCENTAGE 8 // Відсоток від лівого краю екрану для першої кнопки
+#define BUTTON_Y_PERCENTAGE 60 // Відсоток від верхнього краю екрану для першої кнопки
+#define BUTTON_WIDTH_PERCENTAGE 20 // Відсоток ширини екрану для кнопки
+#define BUTTON_HEIGHT_PERCENTAGE 10 // Відсоток висоти екрану для кнопки
+#define BUTTON_Y_PADDING_PERCENTAGE 12 // Відступ між кнопками
+#define BUTTON_X (SCREENWIDTH * BUTTON_X_PERCENTAGE / 100)
+#define BUTTON_Y (SCREENHEIGHT * BUTTON_Y_PERCENTAGE / 100)
+#define BUTTON_WIDTH (SCREENWIDTH * BUTTON_WIDTH_PERCENTAGE / 100)
+#define BUTTON_HEIGHT (SCREENHEIGHT * BUTTON_HEIGHT_PERCENTAGE / 100)
+
 
 SDL_Texture* CreateTextureFromImg(SDL_Renderer* renderer, const char* path);
 

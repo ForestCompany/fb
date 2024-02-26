@@ -193,8 +193,6 @@ void Game(SDL_Renderer *renderer)
 }
 
 
-
-
 void intro(SDL_Renderer* renderer) {
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/intro.png");
     int alpha = 255;
@@ -214,8 +212,8 @@ void intro(SDL_Renderer* renderer) {
         ShowEntity(renderer, background);
         SDL_RenderPresent(renderer);
 
-        SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(background->text, alpha--);
+        // SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
+        // SDL_SetTextureAlphaMod(background->text, alpha--);
 
    
         SDL_Delay(1000. / fps);
@@ -225,6 +223,158 @@ void intro(SDL_Renderer* renderer) {
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
 }
+
+int menu(SDL_Renderer* renderer) {
+
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/backgroundMenu.png");
+    Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/startButton.png","resource/images/startButton2.png");
+    Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/settingsButton.png","resource/images/settingsButton2.png");
+    Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/quitButton.png","resource/images/quitButton2.png");
+    Button* buttonArray[] = {
+        startButton,
+        settingsButton,
+        quitButton
+    };
+    int index = -1;
+    int numButtons = 3;
+    int mouseCordsX = 0;
+    int mouseCordsY = 0;
+    SDL_Event event;
+    bool isexit = false;
+    while(!isexit){
+        while(SDL_PollEvent(&event)){
+            switch(event.type) {
+                case SDL_QUIT:
+                    isexit = true;
+                    break;
+                
+                case SDL_MOUSEBUTTONDOWN:
+                    SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
+                            isexit = true;
+                            index = i;
+                            break;
+                        }
+                    }
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
+                            buttonArray[i]->state = STATE2;
+                        } else {
+                            buttonArray[i]->state = STATE1;
+                        }
+                    }
+                    break;
+            }
+        }
+        ShowEntity(renderer, background);
+        ShowButton(renderer, quitButton);
+        ShowButton(renderer, settingsButton);
+        ShowButton(renderer, startButton);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000. / fps);
+    }
+
+    for (int i = 0; i < numButtons; i++) {
+        DestroyButton(buttonArray[i]);
+    }
+    
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+    DestroyEntity(background);
+    return index;
+}
+
+void outroWin(SDL_Renderer* renderer) {
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/Victoryscreen.png");
+    bool isexit = false;
+    SDL_Event event;
+    Uint32 startTime = SDL_GetTicks();
+
+    while (!isexit) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_KEYDOWN) {
+                isexit = true;
+            }
+        }
+        if (SDL_GetTicks() - startTime >= 5000) {
+            isexit = true;
+        }
+        ShowEntity(renderer, background);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000. / fps);
+    }
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+    DestroyEntity(background);
+}   
+
+int outroLoose(SDL_Renderer* renderer) {
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/deathscreen.png");
+    Button* menuButton = CreateButton(renderer, (SDL_Rect){550, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/menuButton.png", "resource/images/menuButton2.png");
+    Button* retryButton = CreateButton(renderer, (SDL_Rect){1200, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/retryButton.png", "resource/images/retryButton2.png");
+    Button* buttonArray[] = {
+        menuButton,
+        retryButton
+    };
+
+    bool isexit = false;
+    int index = -1;
+    int numButtons = sizeof(buttonArray) / sizeof(buttonArray[0]);
+    SDL_Event event;
+
+    int mouseCordsX = 0;
+    int mouseCordsY = 0;
+
+    while (!isexit) {
+        while(SDL_PollEvent(&event)){
+            switch(event.type) {
+                case SDL_QUIT:
+                    isexit = true;
+                    break;
+        
+                case SDL_MOUSEBUTTONDOWN:
+                    SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
+                            isexit = true;
+                            index = i;
+                            break;
+                        }
+                    }
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
+                            buttonArray[i]->state = STATE2;
+                        } else {
+                            buttonArray[i]->state = STATE1;
+                        }
+                    }
+                    break;
+            }
+        }
+        ShowEntity(renderer, background);
+        ShowButton(renderer, menuButton);
+        ShowButton(renderer, retryButton);
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000. / fps);
+    }
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+    DestroyEntity(background);
+    DestroyButton(menuButton);
+    DestroyButton(retryButton);
+    return index;
+}
+
+
 
 typeoftile GetType(Map *map, SDL_Point mouse, Person *EnemyArr[ENEMYCOUNT])
 {
