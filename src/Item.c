@@ -1,4 +1,4 @@
-#include "Item.h"
+#include "../inc/Item.h"
 
 Item* CreateItem(SDL_Renderer* r,const char* title, int x, int y, int width, int height, const char* path, int hp, int mana, int armor, int damage)
 {
@@ -19,5 +19,7 @@ void DestroyItem(Item* i) {
 }
 
 void ShowItem(SDL_Renderer *r, Item *i) {
-    ShowEntity(r, i->soul);
+    
+        ShowEntity(r, i->soul);
+    
 }

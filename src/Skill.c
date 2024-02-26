@@ -1,4 +1,4 @@
-#include "Skill.h"
+#include "../inc/Skill.h"
 
 
 Skill* CreateSkill(SDL_Renderer* r, SDL_Rect rect, const char* apath, const char* cpath,Uint32 delta,int manacost)
@@ -11,7 +11,7 @@ Skill* CreateSkill(SDL_Renderer* r, SDL_Rect rect, const char* apath, const char
 	char str[4];
 	sprintf(str, "%d", s->counter);
 	s->lastTimerUpdate = 0;
-	s->timer = CreateEntityTTF(r, rect.x, rect.y, rect.w, rect.h, "fonts/Minecraft.ttf", str, 20, (SDL_Color){255,255,255,0});
+	s->timer = CreateEntityTTF(r, rect.x, rect.y, rect.w, rect.h, "resource/fonts/Minecraft.ttf", str, 20, (SDL_Color){255,255,255,0});
 	return s;
 }
 
@@ -44,7 +44,7 @@ void UpdateSkill(SDL_Renderer* r, Skill* b)
 			sprintf(str, "%d", b->counter);
 
 			SDL_DestroyTexture(b->timer->text);
-			b->timer->text = CreateTextureFromFont(r, str, "fonts/Minecraft.ttf", 12, (SDL_Color) { 255, 255, 255 ,0});
+			b->timer->text = CreateTextureFromFont(r, str, "resource/fonts/Minecraft.ttf", 12, (SDL_Color) { 255, 255, 255 ,0});
 			
 
 

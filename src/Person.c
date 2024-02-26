@@ -1,4 +1,4 @@
-#include "Person.h"
+#include "../inc/Person.h"
 
 Person* CreatePerson(SDL_Renderer* r,int x, int y, int width, int height, const char* path) {
 	Person* p = (Person*)malloc(sizeof(Person));
@@ -64,22 +64,22 @@ void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 
 
 	sprintf(str, "%d", p->stats.hp);
-	Entity* hp = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPBAR, 60, HEIGHTBAR, "fonts/Minecraft.ttf", str, 120, color);
+	Entity* hp = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPBAR, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 
 	sprintf(str, "%d", p->stats.mana);
-	Entity* mana = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPMANA, 60, HEIGHTBAR, "fonts/Minecraft.ttf", str, 120, color);
+	Entity* mana = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPMANA, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 
 	sprintf(str,  "%d", p->stats.armor);
-	Entity* armor = CreateEntityTTF(r, XTABFORBAR , TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "fonts/Minecraft.ttf", str, 120, color);
+	Entity* armor = CreateEntityTTF(r, XTABFORBAR , TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 
 	sprintf(str,  "%d", p->stats.damage);
-	Entity* damage = CreateEntityTTF(r, XTABFORBAR + 100, TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "fonts/Minecraft.ttf", str, 120, color);
+	Entity* damage = CreateEntityTTF(r, XTABFORBAR + 100, TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 	ShowEntity(r, hp);
@@ -87,11 +87,31 @@ void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 	ShowEntity(r, armor);
 	ShowEntity(r, damage);
 
+	for (int i = 0; i < 6; i++) {
+		Item *it = p->inventory[i];
+		if (it != NULL) {
+			ShowItem(r, it);
+		}
+	}
 
 	DestroyEntity(hp);
 	DestroyEntity(mana);
 	DestroyEntity(armor);
 	DestroyEntity(damage);
+}
+
+void SetFullStats(Person *p, int npower, int nintellekt, int armor, int damage)
+{
+	p->stats.armor = armor;
+	p->stats.damage = damage;
+
+	p->stats.power->kolik = npower;
+	p->stats.power->cap = npower * p->stats.power->statperatr;
+	p->stats.hp = p->stats.power->cap;
+
+	p->stats.intellekt->kolik = nintellekt;
+	p->stats.intellekt->cap = nintellekt * p->stats.intellekt->statperatr;
+	p->stats.mana = p->stats.intellekt->cap;
 }
 
 void UpdateStats(Person *p, int index) {
@@ -121,6 +141,14 @@ void UpdateStats(Person *p, int index) {
 void ShowStats(Person* p)
 {
 	printf("hp:%d\nmana:%d\ndamage:%d\narmor:%d\nhp cap:%d\nmana cap:%d\n\n",p->stats.hp, p->stats.mana, p->stats.damage, p->stats.armor, p->stats.power->cap, p->stats.intellekt->cap 		);
+	// for(int i = 0; i < 6; i++){
+	// 	if(p->inventory[i]!=0){
+	// 		printf("%s\n", p->inventory[i]->title);
+	// 	}
+	// 	else {
+	// 		printf("NULL\n");
+	// 	}
+	// }
 }
 
 void PVP(Person* p1, Person* p2)
@@ -133,10 +161,14 @@ void PVP(Person* p1, Person* p2)
 
 	if (p1->stats.hp <= 0) {
 		p1->alive = false;
+		GrabItem(p2, p1->inventory[0]);
+		p1->inventory[0] = 0;
 	}
 	
 	if (p2->stats.hp <= 0) {
 		p2->alive = false;
+		GrabItem(p1, p2->inventory[0]);
+		p2->inventory[0] = 0;
 	}
 }
 
@@ -196,14 +228,40 @@ void IncY(Person *p, int y) {
 }
 
 void GrabItem(Person *p, Item *it) {
-	int volnyindex;
-	for(volnyindex = 0; volnyindex < 6; volnyindex++) {
-		if (p->inventory[volnyindex] == 0) {
-			p->inventory[volnyindex] = it;
-			UpdateStats(p, volnyindex);
-			break;
-		}
+    if (p == NULL) {
+        // Дополнительная проверка на корректность указателей
+        printf("Ошибка: Некорректные указатели на персонажа \n");
+        return;
+    }
+	if (it == NULL) {
+		printf("ошибка указатель на предмет\n");
+		return;
 	}
-	ShowStats(p);
+
+    int volnyindex;
+    for (volnyindex = 0; volnyindex < 6; volnyindex++) {
+        if (p->inventory[volnyindex] == NULL) {
+            // Проверяем, что элемент инвентаря пустой
+            int x,width;
+            int y	 = TILESIZE * HEIGHTAMOUNT + YTABSLOT;
+            switch (volnyindex) {
+                case 0: width = WIDTHSLOT1; x = XTABSLOT1; break;
+                case 1: width = WIDTHSLOT2; x = XTABSLOT2; break;
+                case 2: width = WIDTHSLOT3; x = XTABSLOT3; break;
+                case 3: width = WIDTHSLOT4; x = XTABSLOT4; break;
+                case 4: width = WIDTHSLOT5; x = XTABSLOT5; break;
+                case 5: width = WIDTHSLOT6; x = XTABSLOT6; break;
+            }
+            p->inventory[volnyindex] = it;
+            p->inventory[volnyindex]->soul->rect.x = x;
+            p->inventory[volnyindex]->soul->rect.y = y;
+			p->inventory[volnyindex]->soul->rect.w = width;
+			p->inventory[volnyindex]->soul->rect.h = HEIGHTSLOT;
+            UpdateStats(p, volnyindex);
+            break;
+        }
+    }
+    ShowStats(p);
 }
+
 

@@ -1,4 +1,4 @@
-#include "Buttons.h"
+#include "../inc/Buttons.h"
 
 Button* CreateButton(SDL_Renderer* r, SDL_Rect rect, const char* state1path, const char* state2path) {
 	Button* button = (Button*)malloc(sizeof(Button));

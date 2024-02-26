@@ -18,6 +18,8 @@ Person* CreatePerson(SDL_Renderer* r, int x, int y, int width, int height, const
 
 void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color);
 
+void SetFullStats(Person *p, int npower, int nintellekt, int armor, int damage);
+
 void DestroyPerson(Person* p);
 
 void ShowPerson(SDL_Renderer* r, Person* p);

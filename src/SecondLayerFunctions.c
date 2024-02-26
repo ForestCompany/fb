@@ -1,4 +1,4 @@
-#include "SecondLayerFunctions.h"
+#include "../inc/SecondLayerFunctions.h"
 
 bool IsMouseNearPerson(Person* p,  SDL_Point mousecords) {
     int P_X = GetX(p) / TILESIZE;
@@ -14,24 +14,27 @@ bool IsMouseNearPerson(Person* p,  SDL_Point mousecords) {
 
 void Game(SDL_Renderer *renderer)
 {
+    Mix_Chunk *footstepSound = Mix_LoadWAV("resource/sounds/Z.wav");
+
+
     Uint32 lastUpdateTime = 0;
 
     Map* map = CreateMap(renderer, SCREENHEIGHT / TILESIZE - 2, SCREENWIDTH / TILESIZE);
 
-    Person* TOLIK = CreatePerson(renderer, TILESIZE, TILESIZE, TILESIZE, TILESIZE, "images/tolik.png");
-   
+    Person* TOLIK = CreatePerson(renderer, TILESIZE, TILESIZE, TILESIZE, TILESIZE, "resource/images/tolik.png");
+    TOLIK->stats.armor += 1;
     Person* EnemyArr[ENEMYCOUNT];
     FillEnemyArr(renderer,EnemyArr);
 
-    Skill* skil  = CreateSkill(renderer,(SDL_Rect){XTABSKILL,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "images/sword.jpg"," images/swordBLACK.jpg", 5000, 35);
-    Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL1,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "images/heal.jpg", "images/healBLACK.jpg", 10000, 35);
-    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "images/ulta.jpg", "images/ultaBLACK.jpg", 15000, 30);
+    Skill* skil  = CreateSkill(renderer,(SDL_Rect){XTABSKILL,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/sword.jpg","resource/images/swordBLACK.jpg", 5000, 35);
+    Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL1,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/heal.jpg", "resource/images/healBLACK.jpg", 10000, 35);
+    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/ulta.jpg", "resource/images/ultaBLACK.jpg", 15000, 30);
 
 
     Item ***BufferArr;
 
     //Item *item1 = CreateItem(renderer, "item1", TILESIZE * 5, TILESIZE * 5, TILESIZE, TILESIZE, "images/Victoryscreen.png", 1, 1, 1, 1);
-    Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "images/hood.png");
+    Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "resource/images/hood.png");
 
     SDL_Color color = { 0,0,0,255 };
 
@@ -64,21 +67,21 @@ void Game(SDL_Renderer *renderer)
                     isexit = true;
                     break;
                 case SDLK_q:
-                        if(skil->b->state == STATE1 && TOLIK->stats.mana>= skil->manacost){
+                        if(skil->b->state == STATE1 && TOLIK->stats.mana>= skil->manacost) {
                             PressSkill(skil);
                             DecrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil->manacost);
                         }
                     break;
                 case SDLK_w:
-                    if(skil1->b->state == STATE1 && TOLIK->stats.mana>= skil1->manacost){
+                    if(skil1->b->state == STATE1 && TOLIK->stats.mana>= skil1->manacost) {
                             PressSkill(skil1);
                             IncrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil1->manacost);
                         }
                     break;
                 case SDLK_e:
-                    if(skil2->b->state == STATE1&& TOLIK->stats.mana>= skil2->manacost){
+                    if(skil2->b->state == STATE1 && TOLIK->stats.mana>= skil2->manacost) {
                             PressSkill(skil2);
                             DecrementMana(TOLIK,skil2->manacost);
                             for(int i = 0;i<ENEMYCOUNT;i++){
@@ -88,11 +91,7 @@ void Game(SDL_Renderer *renderer)
                         }
                     break;
                 case SDLK_9:
-                    // if (poshel == false) {
-                    //     GrabItem(TOLIK, item1);
-                    //     poshel = true;
-                    // }
-                    // break;
+                      Mix_PlayChannel(-1, footstepSound, 0);
                 
                 }
                 break;
@@ -122,6 +121,8 @@ void Game(SDL_Renderer *renderer)
                         printf("GRASS\n");
                         TOLIK->soul->rect.x = map->map[mapcord.y][mapcord.x].soul->rect.x;
                         TOLIK->soul->rect.y = map->map[mapcord.y][mapcord.x].soul->rect.y;
+                        Mix_Volume(-1, MIX_MAX_VOLUME);
+                        Mix_PlayChannel(-1, footstepSound, 0);
                    
                         break;
 
@@ -193,24 +194,8 @@ Person *FindEnemy(SDL_Point mapcords, Person *EnemyArr[ENEMYCOUNT])
     return NULL;
 }
 
-// void intro(SDL_Renderer* renderer){
-//     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
-//     bool isexit = false;
-//     Uint32 starttimer = SDL_GetTicks();
-//     while (!isexit) {
-//         ShowEntity(renderer, background);
-//         SDL_RenderPresent(renderer);
-//         SDL_Delay(1000./fps);
-//         if(SDL_GetTicks()-starttimer >=5000){
-//             isexit = true;
-//         }
-//     }
-
-
-//     DestroyEntity(background);
-// }
 void intro(SDL_Renderer* renderer) {
-    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/intro.png");
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/intro.png");
     int alpha = 255;
     bool isexit = false;
     SDL_Event x;
@@ -240,12 +225,12 @@ void intro(SDL_Renderer* renderer) {
     DestroyEntity(background);
 }
 
-int menu(SDL_Renderer* renderer){
+int menu(SDL_Renderer* renderer) {
 
-    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/backgroundMenu.png");
-    Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, "images/startButton.png","images/startButton2.png");
-    Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, BUTTON_WIDTH, BUTTON_HEIGHT}, "images/settingsButton.png","images/settingsButton2.png");
-    Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), BUTTON_WIDTH, BUTTON_HEIGHT}, "images/quitButton.png","images/quitButton2.png");
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/backgroundMenu.png");
+    Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/startButton.png","resource/images/startButton2.png");
+    Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/settingsButton.png","resource/images/settingsButton2.png");
+    Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/quitButton.png","resource/images/quitButton2.png");
     Button* buttonArray[] = {
         startButton,
         settingsButton,
@@ -253,8 +238,8 @@ int menu(SDL_Renderer* renderer){
     };
     int index = -1;
     int numButtons = sizeof(buttonArray) / sizeof(buttonArray[0]);
-    int mousecordsX = 0;
-    int mousecordsY = 0;
+    int mouseCordsX = 0;
+    int mouseCordsY = 0;
     SDL_Event event;
     bool isexit = false;
     while(!isexit){
@@ -265,9 +250,9 @@ int menu(SDL_Renderer* renderer){
                     break;
                 
                 case SDL_MOUSEBUTTONDOWN:
-                    SDL_GetMouseState(&mousecordsX, &mousecordsY);
+                    SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
                     for (int i = 0; i < numButtons; ++i) {
-                        if (CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &buttonArray[i]->rect)) {
+                        if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
                             isexit = true;
                             index = i;
                             break;
@@ -276,9 +261,9 @@ int menu(SDL_Renderer* renderer){
                     break;
 
                 case SDL_MOUSEMOTION:
-                    SDL_GetMouseState(&mousecordsX, &mousecordsY);
+                    SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
                     for (int i = 0; i < numButtons; ++i) {
-                        if (CheckButton(&(SDL_Point){mousecordsX, mousecordsY}, &buttonArray[i]->rect)) {
+                        if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
                             buttonArray[i]->state = STATE2;
                         } else {
                             buttonArray[i]->state = STATE1;
@@ -294,13 +279,58 @@ int menu(SDL_Renderer* renderer){
         SDL_RenderPresent(renderer);
         SDL_Delay(1000. / fps);
     }
+
+    for (int i = 0; i < numButtons; i++) {
+        DestroyButton(buttonArray[i]);
+    }
+    
+    SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
-    DestroyButton(startButton);
-    DestroyButton(settingsButton);
-    DestroyButton(quitButton);
     return index;
 }
+
+// void settings(SDL_Renderer* renderer) {
+//     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/backgroundMenu.png");
+//     Button* apply_button = CreateButton(renderer, (SDL_Rect){300, 700, 50, 200}, "images/Apply_button.png", "images/Apply_button2.png");
+//     bool isexit = false;
+//     SDL_Event event;
+//     int mouseCordsX = 0;
+//     int mouseCordsY = 0;
+
+//     // Прозорість прямокутника затемнення
+//     SDL_Rect darkenRect = {0, 0, SCREENWIDTH, SCREENHEIGHT};
+//     SDL_SetRenderDrawColor(renderer, 128, 128, 128, 5); // Сірий колір з прозорістю
+
+//     while (!isexit) {
+//         SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
+//         printf("Mouse Position: x = %d, y = %d\n", mouseCordsX, mouseCordsY);
+//         while (SDL_PollEvent(&event)) {
+//             switch (event.type) {
+//                 case SDL_MOUSEBUTTONDOWN:
+//                     SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
+//                     if(CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &apply_button->rect)){
+//                         isexit = true;
+//                         break;
+//                     }
+//             }
+//         }
+
+//         // Відображення фону
+//         ShowEntity(renderer, background);
+//         // Відображення кнопки
+//         ShowButton(renderer, apply_button);
+//         // Відображення затемнення
+//         SDL_RenderFillRect(renderer, &darkenRect);
+        
+//         SDL_RenderPresent(renderer);
+//         SDL_Delay(1000. / fps);
+//     }
+    
+//     DestroyEntity(background);
+//     DestroyButton(apply_button);
+//     SDL_RenderClear(renderer);
+// }
 
 typeoftile GetType(Map *map, SDL_Point mouse, Person *EnemyArr[ENEMYCOUNT])
 {

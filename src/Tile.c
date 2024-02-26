@@ -1,4 +1,4 @@
-#include "Tile.h"
+#include "../inc/Tile.h"
 
 Tile* CreateTile(SDL_Renderer* r, int x, int y, int width, int height, const char* path, typeoftile t)
 {

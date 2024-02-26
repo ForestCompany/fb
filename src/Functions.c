@@ -1,5 +1,5 @@
 
-#include "Functions.h"
+#include "../inc/Functions.h"
 
 SDL_Texture* CreateTextureFromImg(SDL_Renderer* renderer, const char* path) {
 	SDL_Surface* srf = IMG_Load(path);
