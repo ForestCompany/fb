@@ -28,20 +28,39 @@ int main(int argc, char* argv[]) {
     // Mix_CloseAudio();
     intro(renderer);
     int status = menu(renderer);
-    // Game(renderer);
-    switch(status) {
-        case 0:
-            Game(renderer);
-            break;
-        case 1:
-            outroLoose(renderer);
-        case 2:
-            SDL_DestroyWindow(window);
-            SDL_DestroyRenderer(renderer);
-            SDL_Quit();
-            TTF_Quit();
-            IMG_Quit();
-    }
+    // int status;
+    // while (status != 2) {
+    //     status = menu(renderer);
+    //     switch (status) {
+    //         case 0:
+    //         status = Game(renderer);
+    //         break;
+    //     case 1:
+    //         outroLoose(renderer);
+    //     case 2:
+    //         status = 2;
+    //         SDL_DestroyWindow(window);
+    //         SDL_DestroyRenderer(renderer);
+    //         SDL_Quit();
+    //         TTF_Quit();
+    //         IMG_Quit();
+    //     }
+        
+    // }
+    // int status = menu(renderer);
+    // switch(status) {
+    //     case 0:
+    //         Game(renderer);
+    //         break;
+    //     case 1:
+    //         outroLoose(renderer);
+    //     case 2:
+    //         SDL_DestroyWindow(window);
+    //         SDL_DestroyRenderer(renderer);
+    //         SDL_Quit();
+    //         TTF_Quit();
+    //         IMG_Quit();
+    // }
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();

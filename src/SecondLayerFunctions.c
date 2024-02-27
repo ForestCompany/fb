@@ -226,22 +226,26 @@ void intro(SDL_Renderer* renderer) {
 
 int menu(SDL_Renderer* renderer) {
 
+    Mix_Music* music = Mix_LoadMUS("resource/sounds/menu.wav");
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/backgroundMenu.png");
 
     Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, 
                             "resource/images/startButton.png","resource/images/startButton2.png");
 
-    Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, 
-                            BUTTON_WIDTH, BUTTON_HEIGHT}, 
-                            "resource/images/settingsButton.png","resource/images/settingsButton2.png");
+    // Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, 
+    //                         BUTTON_WIDTH, BUTTON_HEIGHT}, 
+    //                         "resource/images/settingsButton.png","resource/images/settingsButton2.png");
 
     Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), 
                         BUTTON_WIDTH, BUTTON_HEIGHT}, 
                         "resource/images/quitButton.png","resource/images/quitButton2.png");
 
+    Mix_VolumeMusic(10);
+    Mix_PlayMusic(music, -1);
+
     Button* buttonArray[] = {
         startButton,
-        settingsButton,
+        // settingsButton,
         quitButton
     };
     int index = -1;
@@ -280,10 +284,11 @@ int menu(SDL_Renderer* renderer) {
                     break;
             }
         }
+
         ShowEntity(renderer, background);
-        ShowButton(renderer, quitButton);
-        ShowButton(renderer, settingsButton);
-        ShowButton(renderer, startButton);
+        for (int i = 0; i < numButtons; i++) {
+            ShowButton(renderer, buttonArray[i]);
+        }
         SDL_RenderPresent(renderer);
         SDL_Delay(1000. / fps);
     }
@@ -323,6 +328,8 @@ void outroWin(SDL_Renderer* renderer) {
 }   
 
 int outroLoose(SDL_Renderer* renderer) {
+
+    Mix_Music* music = Mix_LoadMUS("resource/sounds/outroloose.wav");
     Entity* background = CreateEntity (renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/deathscreen.png");
    
     Button* menuButton = CreateButton (renderer, (SDL_Rect){SCREENWIDTH * BUTTON_X_PERCENTAGE_OUTRO / 100, 
@@ -333,6 +340,9 @@ int outroLoose(SDL_Renderer* renderer) {
                                                SCREENHEIGHT * (BUTTON_Y_PERCENTAGE_OUTRO - BUTTON_SPACING_PERCENTAGE) / 100 - BUTTON_HEIGHT, 
                                                BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/retryButton.png", "resource/images/retryButton2.png");
     
+    Mix_VolumeMusic(10);
+    Mix_PlayMusic(music, 1);
+
     Button* buttonArray[] = {
         menuButton,
         retryButton
@@ -377,11 +387,13 @@ int outroLoose(SDL_Renderer* renderer) {
             }
         }
         ShowEntity(renderer, background);
-        ShowButton(renderer, menuButton);
-        ShowButton(renderer, retryButton);
+        for (int i = 0; i < numButtons; i++) {
+            ShowButton(renderer, buttonArray[i]);
+        }
         SDL_RenderPresent(renderer);
         SDL_Delay(1000. / fps);
     }
+    Mix_FreeMusic(music);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
