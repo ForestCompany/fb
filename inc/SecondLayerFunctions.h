@@ -23,7 +23,7 @@ void outroWin(SDL_Renderer* renderer);
 
 int outroLoose(SDL_Renderer* renderer);
 
-void Game(SDL_Renderer* renderer);
+int Game(SDL_Renderer* renderer);
 
 typeoftile GetType(Map* map,SDL_Point mouse,Person* EnemyArr[ENEMYCOUNT]);
 

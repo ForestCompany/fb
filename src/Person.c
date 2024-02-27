@@ -46,7 +46,8 @@ void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 {
 	char str[20];
 	SDL_Rect rect;
-
+	int index = 0;
+	int index0 = 0;
 
 	SDL_SetRenderDrawColor(r, 255, 0, 0, 255);
 	rect.x = XTABFORBAR;
@@ -63,23 +64,23 @@ void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 
 
 
-	sprintf(str, "%d", p->stats.hp);
-	Entity* hp = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPBAR, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
+	sprintf(str, "%d", (int)p->stats.hp);
+	Entity* hp = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPBAR, 120/2, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 
-	sprintf(str, "%d", p->stats.mana);
-	Entity* mana = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPMANA, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
+	sprintf(str, "%d", (int)p->stats.mana);
+	Entity* mana = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/4, TILESIZE*HEIGHTAMOUNT + YTABFORHPMANA, 120/2, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 
-	sprintf(str,  "%d", p->stats.armor);
-	Entity* armor = CreateEntityTTF(r, XTABFORBAR , TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
+	sprintf(str,  "%d", (int)p->stats.armor);
+	Entity* armor = CreateEntityTTF(r, XTABFORBAR , TILESIZE*HEIGHTAMOUNT + YARMORTAB, 120/2, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 
-	sprintf(str,  "%d", p->stats.damage);
-	Entity* damage = CreateEntityTTF(r, XTABFORBAR + 100, TILESIZE*HEIGHTAMOUNT + YARMORTAB, 60, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
+	sprintf(str,  "%d", (int)p->stats.damage);
+	Entity* damage = CreateEntityTTF(r, XTABFORBAR + 100, TILESIZE*HEIGHTAMOUNT + YARMORTAB, 120/2, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 	ShowEntity(r, hp);
@@ -119,8 +120,8 @@ void UpdateStats(Person *p, int index) {
         // Добавьте обработку нулевых указателей
         return;
     }
-	int percenthp = (p->stats.hp ) / p->stats.power->cap;
-	int percentmana = (p->stats.mana) / p->stats.intellekt->cap;
+	double percenthp = (p->stats.hp ) / p->stats.power->cap;
+	double percentmana = (p->stats.mana) / p->stats.intellekt->cap;
     // Обновление damage и armor
     p->stats.damage += p->inventory[index]->stats.damage;
     p->stats.armor += p->inventory[index]->stats.armor;

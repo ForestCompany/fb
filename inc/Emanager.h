@@ -14,6 +14,8 @@ typedef enum enemy_e {
 }           enemy_t;
 Person *CreateEnemy(SDL_Renderer *r, enemy_t e);
 
+bool IsDead(Person *n[ENEMYCOUNT]);
+
 void FillEnemyArr(SDL_Renderer* r,Person* n[ENEMYCOUNT]);
 
 bool IsPersonAtPosition(Person *person, int x, int y);

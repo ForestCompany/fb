@@ -21,8 +21,6 @@ int main(int argc, char* argv[]) {
 
     intro(renderer);
     menu(renderer);
-    Game(renderer);
-    
    
 
     SDL_DestroyWindow(window);

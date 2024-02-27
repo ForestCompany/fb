@@ -10,19 +10,20 @@ bool IsMouseNearPerson(Person* p,  SDL_Point mousecords) {
     return  isNearHorizontal || isNearVertical;
 }
 
-
-
-void Game(SDL_Renderer *renderer)
+int Game(SDL_Renderer *renderer)
 {
     Mix_Chunk *footstepSound = Mix_LoadWAV("resource/sounds/Z.wav");
     Uint32 lasttimerAI = 0;
+    Uint32 skillaction = 0;
+    bool pressed = false;
     int NOMERVRAGA = 0;
-
+    int res = -1;
     Uint32 lastUpdateTime = 0;
 
     Map* map = CreateMap(renderer, SCREENHEIGHT / TILESIZE - 2, SCREENWIDTH / TILESIZE);
 
     Person* TOLIK = CreatePerson(renderer, TILESIZE, TILESIZE, TILESIZE, TILESIZE, "resource/images/tolik.png");
+    TOLIK->stats.hp = 50;
     Person* EnemyArr[ENEMYCOUNT];
     FillEnemyArr(renderer,EnemyArr);
 
@@ -71,8 +72,10 @@ void Game(SDL_Renderer *renderer)
                 case SDLK_q:
                         if(skil->b->state == STATE1 && TOLIK->stats.mana>= skil->manacost) {
                             PressSkill(skil);
-                            DecrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil->manacost);
+                            skillaction = SDL_GetTicks();
+                            TOLIK->stats.damage += 40;
+                            pressed = true;
                         }
                     break;
                 case SDLK_w:
@@ -92,7 +95,7 @@ void Game(SDL_Renderer *renderer)
                         }
                     break;
                 case SDLK_9:
-                      Mix_PlayChannel(-1, footstepSound, 0);
+                      DecrementHP(TOLIK, TOLIK->stats.hp);
                 }
                 break;
 
@@ -115,7 +118,10 @@ void Game(SDL_Renderer *renderer)
             case SDL_MOUSEBUTTONDOWN: {
                 SDL_GetMouseState(&mousecords.x, &mousecords.y);
                 SDL_Point mapcord = { mousecords.y / TILESIZE, mousecords.x / TILESIZE };
-             
+                if (SDL_GetTicks() - skillaction >= 5000 && pressed) {
+                    TOLIK->stats.damage -= 40;
+                    pressed = false;
+                }
                 typeoftile e = GetType(map,mapcord,EnemyArr);
 
                 if (IsMouseNearPerson(TOLIK,  mousecords)) {
@@ -125,9 +131,7 @@ void Game(SDL_Renderer *renderer)
                         TOLIK->soul->rect.x = map->map[mapcord.y][mapcord.x].soul->rect.x;
                         TOLIK->soul->rect.y = map->map[mapcord.y][mapcord.x].soul->rect.y;
                         Mix_PlayChannel(-1, footstepSound, 0);
-                   
                         break;
-
                     case MOUNTAIN:
                         printf("MOUNTAIN\n");
                         break;
@@ -146,7 +150,7 @@ void Game(SDL_Renderer *renderer)
         UpdateSkill(renderer,skil);
         UpdateSkill(renderer,skil1);
         UpdateSkill(renderer,skil2);
-        if (SDL_GetTicks() - lasttimerAI >= 1000) {
+        if (SDL_GetTicks() - lasttimerAI >= 500<<2) {
             AIEnemy(EnemyArr, TOLIK);
             lasttimerAI = SDL_GetTicks();
         }
@@ -173,8 +177,14 @@ void Game(SDL_Renderer *renderer)
         SDL_RenderCopy(renderer, bufferTexture, NULL, NULL);
         SDL_RenderPresent(renderer);
 
-
-        
+        if (TOLIK->stats.hp <= 0) {
+            res = 0;
+            isexit = true;
+        }
+        else if (IsDead(EnemyArr) && NOMERVRAGA == 6) {
+            res = 1;
+            isexit = true;
+        }
       
         SDL_Delay(1000./fps);
     }
@@ -191,17 +201,20 @@ void Game(SDL_Renderer *renderer)
     DestroySkill(skil);
     DestroySkill(skil1);
     DestroySkill(skil2);
-
+    switch(res) {
+        case 0: outroLoose(renderer);break;
+        case 1: outroWin(renderer);break;
+    }
+    return res;
 }
-
 
 void intro(SDL_Renderer* renderer) {
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/intro.png");
-    int alpha = 255;
+    int alpha = 0;
     bool isexit = false;
     SDL_Event x;
 
-    while (alpha > 0 && !isexit) {
+    while (alpha <= 255 && !isexit) {
         // Обработка событий
         while (SDL_PollEvent(&x)) {
             if (x.type == SDL_KEYDOWN) {
@@ -215,7 +228,7 @@ void intro(SDL_Renderer* renderer) {
         SDL_RenderPresent(renderer);
 
         SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(background->text, alpha--);
+        SDL_SetTextureAlphaMod(background->text, alpha++);
 
    
         SDL_Delay(1000. / fps);
@@ -288,7 +301,11 @@ int menu(SDL_Renderer* renderer) {
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
-    return index;
+    switch (index) {
+        case 0: Game(renderer); break;
+        default: break;
+    }
+    return 0;
 }
 
 void outroWin(SDL_Renderer* renderer) {
@@ -373,7 +390,10 @@ int outroLoose(SDL_Renderer* renderer) {
     DestroyEntity(background);
     DestroyButton(menuButton);
     DestroyButton(retryButton);
-    return index;
+    switch(index) {
+        case 0: menu(renderer);break;
+        case 1: Game(renderer);break;
+    }
 }
 
 

@@ -53,26 +53,29 @@ Person *CreateEnemy(SDL_Renderer *r, enemy_t e) {
 
 
     switch (e) {
-        case e1: res = CreatePerson(r,TILESIZE*2,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag1.png"); 
+        case e1: res = CreatePerson(r,TILESIZE*2,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
             SetFullStats(res, power, intellekt, armor, damage); 
-            it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/sword.jpg",5,0,5,5); 
-            res->inventory[0] = it;
-        break;
-        case e2: res = CreatePerson(r,TILESIZE*3,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag2.png"); SetFullStats(res, power, intellekt, armor, damage); 
-        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/hood.png",0,5,5,5); 
-        res->inventory[0] = it;  break;
-        case e3: res = CreatePerson(r,TILESIZE*4,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag3.png"); SetFullStats(res, power, intellekt, armor, damage);
-        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/deathscreen.png",0,5,5,0); 
-        res->inventory[0] = it; count++; break;
-        case e4: res = CreatePerson(r,TILESIZE*5,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag4.png"); SetFullStats(res, power, intellekt, armor, damage); 
-        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/tolik.png",0,5,5,5); 
-        res->inventory[0] = it; count++; break;
-        case e5: res = CreatePerson(r,TILESIZE*6,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag5.png"); 
-        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/Victoryscreen.png",5,5,0,5); 
-        res->inventory[0] = it; count++; break;
-        case e6: res = CreatePerson(r,TILESIZE*7,TILESIZE,TILESIZE,TILESIZE,"resource/images/vrag6.png"); SetFullStats(res, power, intellekt, armor, damage); 
-        it = CreateItem(r,"huy penis", 0,0,0,0,"resource/images/tile.png",5,0,5,5); 
-        res->inventory[0] = it; count++; break;
+            it = CreateItem(r,"a", 0,0,0,0,GetEnemyItemImagePath(e),5,0,5,5); 
+            res->inventory[0] = it;break;
+        case e2: res = CreatePerson(r,TILESIZE*3,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
+            SetFullStats(res, power, intellekt, armor, damage); 
+            it = CreateItem(r,"b", 0,0,0,0,GetEnemyItemImagePath(e),0,5,5,5); 
+            res->inventory[0] = it;  break;
+        case e3: res = CreatePerson(r,TILESIZE*4,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
+            SetFullStats(res, power, intellekt, armor, damage);
+            it = CreateItem(r,"c", 0,0,0,0,GetEnemyItemImagePath(e),0,5,5,0); 
+            res->inventory[0] = it; count++; break;
+        case e4: res = CreatePerson(r,TILESIZE*5,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
+            SetFullStats(res, power, intellekt, armor, damage); 
+            it = CreateItem(r,"d", 0,0,0,0,GetEnemyItemImagePath(e),0,5,5,5); 
+            res->inventory[0] = it; count++; break;
+        case e5: res = CreatePerson(r,TILESIZE*6,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
+            it = CreateItem(r,"e", 0,0,0,0,GetEnemyItemImagePath(e),5,5,0,5); 
+            res->inventory[0] = it; count++; break;
+        case e6: res = CreatePerson(r,TILESIZE*7,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e));
+            SetFullStats(res, power, intellekt, armor, damage); 
+            it = CreateItem(r,"ё", 0,0,0,0,GetEnemyItemImagePath(e),5,0,5,5); 
+            res->inventory[0] = it; count++; break;
         default: res = NULL; break;
     }
     res->alive = false;
@@ -94,12 +97,12 @@ const char* GetEnemyImagePath(enemy_t e) {
 
 const char* GetEnemyItemImagePath(enemy_t e) {
     const char* enemyItemImages[] = {
-        "resource/images/sword.jpg",
-        "resource/images/hood.png",
-        "resource/images/deathscreen.png",
-        "resource/images/tolik.png",
-        "resource/images/Victoryscreen.png",
-        "resource/images/tile.png"
+        "resource/images/profile1.png",
+        "resource/images/profile2.png",
+        "resource/images/profile3.png",
+        "resource/images/profile4.png",
+        "resource/images/profile5.png",
+        "resource/images/profile6.png"
     };
     return enemyItemImages[e];
 }
@@ -130,6 +133,16 @@ bool IsNearEnemy(Person *p1, Person *p2) {
 
     return isNearHorizontal || isNearVertical;
 }
+
+bool IsDead(Person *n[ENEMYCOUNT]) {
+    for (int i = 0; i < ENEMYCOUNT; i++) {
+        if (n[i]->alive == true) {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 
 // void AIEnemy(Person *n[ENEMYCOUNT], Person *tolik, int index) {
