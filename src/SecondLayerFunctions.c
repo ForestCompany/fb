@@ -15,8 +15,9 @@ bool IsMouseNearPerson(Person* p,  SDL_Point mousecords) {
 void Game(SDL_Renderer *renderer)
 {
     Mix_Chunk *footstepSound = Mix_LoadWAV("resource/sounds/Z.wav");
-
+    Uint32 lasttimerAI = 0;
     int NOMERVRAGA = 0;
+
     Uint32 lastUpdateTime = 0;
 
     Map* map = CreateMap(renderer, SCREENHEIGHT / TILESIZE - 2, SCREENWIDTH / TILESIZE);
@@ -27,12 +28,12 @@ void Game(SDL_Renderer *renderer)
 
     Skill* skil  = CreateSkill(renderer,(SDL_Rect){XTABSKILL,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/sword.jpg","resource/images/swordBLACK.jpg", 5000, 35);
     Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL1,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/heal.jpg", "resource/images/healBLACK.jpg", 10000, 35);
-    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/ulta.jpg", "resource/images/ultaBLACK.jpg", 15000, 30);
+    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/ulta.jpg", "resource/images/ultaBLACK.jpg", 1500000, 30);
 
-
-    card_t *card1 = CreateCard(renderer, XTABCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/karta.jpg");
-    card_t *card2 = CreateCard(renderer, XTABCARD + WIDTHCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/karta.jpg");
-    card_t *card3 = CreateCard(renderer, XTABCARD + WIDTHCARD * 2, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/karta.jpg");
+    
+    card_t *card1 = CreateCard(renderer, XTABCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/Exit.png");
+    card_t *card2 = CreateCard(renderer, XTABCARD + WIDTHCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/Exit.png");
+    card_t *card3 = CreateCard(renderer, XTABCARD + WIDTHCARD * 2, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/Exit.png");
     bool PointedKarta = false;
     //Item *item1 = CreateItem(renderer, "item1", TILESIZE * 5, TILESIZE * 5, TILESIZE, TILESIZE, "images/Victoryscreen.png", 1, 1, 1, 1);
     Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "resource/images/hood.png");
@@ -145,11 +146,11 @@ void Game(SDL_Renderer *renderer)
         UpdateSkill(renderer,skil);
         UpdateSkill(renderer,skil1);
         UpdateSkill(renderer,skil2);
-        if (SDL_GetTicks() - lastUpdateTime >= 500) {
+        if (SDL_GetTicks() - lasttimerAI >= 1000) {
             AIEnemy(EnemyArr, TOLIK);
-            lastUpdateTime = SDL_GetTicks();
+            lasttimerAI = SDL_GetTicks();
         }
-        if (SDL_GetTicks() - lastUpdateTime >= 1000 && NOMERVRAGA < 6) {
+        if (SDL_GetTicks() - lastUpdateTime >= 5000 && NOMERVRAGA < 6) {
             EnemyArr[NOMERVRAGA++]->alive = true;
             lastUpdateTime = SDL_GetTicks();
         }
@@ -158,6 +159,7 @@ void Game(SDL_Renderer *renderer)
         ShowPerson(renderer, TOLIK);
         ShowEntity(renderer, hood);
         ShowEnemyArr(renderer,EnemyArr);
+        
         ShowCard(renderer, card1);
         ShowCard(renderer, card2);
         ShowCard(renderer, card3);
@@ -212,8 +214,8 @@ void intro(SDL_Renderer* renderer) {
         ShowEntity(renderer, background);
         SDL_RenderPresent(renderer);
 
-        // SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
-        // SDL_SetTextureAlphaMod(background->text, alpha--);
+        SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(background->text, alpha--);
 
    
         SDL_Delay(1000. / fps);
