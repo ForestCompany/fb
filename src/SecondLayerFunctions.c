@@ -201,7 +201,6 @@ void intro(SDL_Renderer* renderer) {
     SDL_Event x;
 
     while (alpha > 0 && !isexit) {
-        // Обработка событий
         while (SDL_PollEvent(&x)) {
             if (x.type == SDL_KEYDOWN) {
                 isexit = true;
@@ -228,9 +227,18 @@ void intro(SDL_Renderer* renderer) {
 int menu(SDL_Renderer* renderer) {
 
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/backgroundMenu.png");
-    Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/startButton.png","resource/images/startButton2.png");
-    Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/settingsButton.png","resource/images/settingsButton2.png");
-    Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/quitButton.png","resource/images/quitButton2.png");
+
+    Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, 
+                            "resource/images/startButton.png","resource/images/startButton2.png");
+
+    Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, 
+                            BUTTON_WIDTH, BUTTON_HEIGHT}, 
+                            "resource/images/settingsButton.png","resource/images/settingsButton2.png");
+
+    Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), 
+                        BUTTON_WIDTH, BUTTON_HEIGHT}, 
+                        "resource/images/quitButton.png","resource/images/quitButton2.png");
+
     Button* buttonArray[] = {
         startButton,
         settingsButton,
@@ -291,7 +299,7 @@ int menu(SDL_Renderer* renderer) {
 }
 
 void outroWin(SDL_Renderer* renderer) {
-    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/Victoryscreen.png");
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/winscreen.png");
     bool isexit = false;
     SDL_Event event;
     Uint32 startTime = SDL_GetTicks();
@@ -315,11 +323,16 @@ void outroWin(SDL_Renderer* renderer) {
 }   
 
 int outroLoose(SDL_Renderer* renderer) {
-    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/deathscreen.png");
-    // Button* menuButton = CreateButton(renderer, (SDL_Rect){410, 755, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/menuButton.png", "resource/images/menuButton2.png");
-    // Button* retryButton = CreateButton(renderer, (SDL_Rect){410 + BUTTON_WIDTH + 50, 755, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/retryButton.png", "resource/images/retryButton2.png");
-    Button* menuButton = CreateButton(renderer, (SDL_Rect){550, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/menuButton.png", "resource/images/menuButton2.png");
-    Button* retryButton = CreateButton(renderer, (SDL_Rect){1200, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/retryButton.png", "resource/images/retryButton2.png");
+    Entity* background = CreateEntity (renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/deathscreen.png");
+   
+    Button* menuButton = CreateButton (renderer, (SDL_Rect){SCREENWIDTH * BUTTON_X_PERCENTAGE_OUTRO / 100, 
+                                              SCREENHEIGHT * BUTTON_Y_PERCENTAGE_OUTRO / 100, 
+                                              BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/menuButton.png", "resource/images/menuButton2.png");
+
+    Button* retryButton = CreateButton (renderer, (SDL_Rect){SCREENWIDTH * BUTTON_X_PERCENTAGE_OUTRO / 100, 
+                                               SCREENHEIGHT * (BUTTON_Y_PERCENTAGE_OUTRO - BUTTON_SPACING_PERCENTAGE) / 100 - BUTTON_HEIGHT, 
+                                               BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/retryButton.png", "resource/images/retryButton2.png");
+    
     Button* buttonArray[] = {
         menuButton,
         retryButton
@@ -372,12 +385,13 @@ int outroLoose(SDL_Renderer* renderer) {
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
-    DestroyButton(menuButton);
-    DestroyButton(retryButton);
+    for (int i = 0; i < numButtons; i++) {
+        DestroyButton(buttonArray[i]);
+    }
     return index;
 }
 
-// void settings(SDL_Renderer* renderer) {
+// int settings(SDL_Renderer* renderer) {
 //     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "images/backgroundMenu.png");
 //     Button* apply_button = CreateButton(renderer, (SDL_Rect){300, 700, 50, 200}, "images/Apply_button.png", "images/Apply_button2.png");
 //     bool isexit = false;
@@ -403,11 +417,8 @@ int outroLoose(SDL_Renderer* renderer) {
 //             }
 //         }
 
-//         // Відображення фону
 //         ShowEntity(renderer, background);
-//         // Відображення кнопки
 //         ShowButton(renderer, apply_button);
-//         // Відображення затемнення
 //         SDL_RenderFillRect(renderer, &darkenRect);
         
 //         SDL_RenderPresent(renderer);
@@ -417,6 +428,7 @@ int outroLoose(SDL_Renderer* renderer) {
 //     DestroyEntity(background);
 //     DestroyButton(apply_button);
 //     SDL_RenderClear(renderer);
+//     return -1;
 // }
 
 typeoftile GetType(Map *map, SDL_Point mouse, Person *EnemyArr[ENEMYCOUNT])
