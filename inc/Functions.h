@@ -78,11 +78,17 @@
 #define HDHEIGHTSLOT 98
 #define HEIGHTSLOT (HDHEIGHTSLOT * SCREENHEIGHT / 1080)
 
+//FOR INTRO
+#define INTRO_WIDTH (SCREENWIDTH / 3)
+#define INTRO_HEIGHT (SCREENHEIGHT / 3)
+#define INTRO_X ((SCREENWIDTH - INTRO_WIDTH) / 2)
+#define INTRO_Y ((SCREENHEIGHT - INTRO_HEIGHT) / 2)
+
 //FOR BUTTONS IN MENU
 #define BUTTON_X_PERCENTAGE 8 // Відсоток від лівого краю екрану для першої кнопки
 #define BUTTON_Y_PERCENTAGE 60 // Відсоток від верхнього краю екрану для першої кнопки
-#define BUTTON_WIDTH_PERCENTAGE 20 // Відсоток ширини екрану для кнопки
-#define BUTTON_HEIGHT_PERCENTAGE 10 // Відсоток висоти екрану для кнопки
+#define BUTTON_WIDTH_PERCENTAGE 18 // Відсоток ширини екрану для кнопки
+#define BUTTON_HEIGHT_PERCENTAGE 8 // Відсоток висоти екрану для кнопки
 #define BUTTON_Y_PADDING_PERCENTAGE 12 // Відступ між кнопками
 #define BUTTON_X (SCREENWIDTH * BUTTON_X_PERCENTAGE / 100)
 #define BUTTON_Y (SCREENHEIGHT * BUTTON_Y_PERCENTAGE / 100)

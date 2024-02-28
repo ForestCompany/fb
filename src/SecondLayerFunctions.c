@@ -195,49 +195,62 @@ Person *FindEnemy(SDL_Point mapcords, Person *EnemyArr[ENEMYCOUNT])
 }
 
 void intro(SDL_Renderer* renderer) {
-    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/intro.png");
-    int alpha = 255;
+    Button* intro = CreateButton(renderer, (SDL_Rect){INTRO_X, INTRO_Y, INTRO_WIDTH, INTRO_HEIGHT}, 
+                    "resource/images/intro1.png", "resource/images/intro2.png");
+                    
+    int alpha = 0;
     bool isexit = false;
-    SDL_Event x;
+    SDL_Event event;
+    Uint32 startTime = SDL_GetTicks();
+    int status = 0;
+    while (!isexit) {
 
-    while (alpha > 0 && !isexit) {
-        while (SDL_PollEvent(&x)) {
-            if (x.type == SDL_KEYDOWN) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_KEYDOWN) {
                 isexit = true;
             }
         }
 
         SDL_SetRenderDrawColor(renderer, 0,0,0,0);
-        SDL_RenderClear(renderer);
-        ShowEntity(renderer, background);
+        SDL_SetTextureBlendMode(intro->state1, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(intro->state1, alpha++);
+
+        if (alpha == 255) {
+            intro->state = STATE2;
+            status = 1;
+        }
+        
+        if (SDL_GetTicks() - startTime >= 6200) {
+            isexit = true;
+        }
+        ShowButton(renderer, intro);
         SDL_RenderPresent(renderer);
-
-        SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(background->text, alpha--);
-
-   
         SDL_Delay(1000. / fps);
     }
 
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    DestroyEntity(background);
+    DestroyButton(intro);
 }
+
 
 int menu(SDL_Renderer* renderer) {
 
     Mix_Music* music = Mix_LoadMUS("resource/sounds/menu.wav");
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/backgroundMenu.png");
 
-    Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, 
+    Button* startButton = CreateButton(renderer, (SDL_Rect){1150, 
+                                               552,996, 
+                                               BUTTON_WIDTH, BUTTON_HEIGHT}, 
                             "resource/images/startButton.png","resource/images/startButton2.png");
 
     // Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, 
     //                         BUTTON_WIDTH, BUTTON_HEIGHT}, 
     //                         "resource/images/settingsButton.png","resource/images/settingsButton2.png");
 
-    Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), 
-                        BUTTON_WIDTH, BUTTON_HEIGHT}, 
+    Button* quitButton = CreateButton(renderer, (SDL_Rect){1150, 
+                                              SCREENHEIGHT * BUTTON_Y_PERCENTAGE_OUTRO / 100, 
+                                              BUTTON_WIDTH, BUTTON_HEIGHT}, 
                         "resource/images/quitButton.png","resource/images/quitButton2.png");
 
     Mix_VolumeMusic(10);
@@ -304,10 +317,14 @@ int menu(SDL_Renderer* renderer) {
 }
 
 void outroWin(SDL_Renderer* renderer) {
+    Mix_Music* music = Mix_LoadMUS("resource/sounds/outrowin.wav");
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/winscreen.png");
     bool isexit = false;
     SDL_Event event;
     Uint32 startTime = SDL_GetTicks();
+
+    Mix_VolumeMusic(10);
+    Mix_PlayMusic(music, 1);
 
     while (!isexit) {
         while (SDL_PollEvent(&event)) {
@@ -315,13 +332,14 @@ void outroWin(SDL_Renderer* renderer) {
                 isexit = true;
             }
         }
-        if (SDL_GetTicks() - startTime >= 5000) {
+        if (SDL_GetTicks() - startTime >= 10000) {
             isexit = true;
         }
         ShowEntity(renderer, background);
         SDL_RenderPresent(renderer);
         SDL_Delay(1000. / fps);
     }
+    Mix_FreeMusic(music);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);

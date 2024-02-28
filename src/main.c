@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
     //     IMG_Quit();
     
     // Mix_CloseAudio();
-    intro(renderer);
+    // intro(renderer);
     int status = menu(renderer);
     // int status;
     // while (status != 2) {
@@ -47,6 +47,7 @@ int main(int argc, char* argv[]) {
     //     }
         
     // }
+    outroLoose(renderer);
     // int status = menu(renderer);
     // switch(status) {
     //     case 0:
