@@ -15,15 +15,7 @@ bool IsOverlapping(Person *n[], int count, int x, int y) {
 void FillEnemyArr(SDL_Renderer *r, Person *n[ENEMYCOUNT])
 {
         for (int i = 0; i < ENEMYCOUNT; i++) {
-        int randomX, randomY;
-        do {
-            randomX = (2 + rand() % (18 - 2)) * TILESIZE;
-            randomY = (1 + rand() % 7) * TILESIZE;
-        } while (IsOverlapping(n, i, randomY, randomX));
-
         n[i] = CreateEnemy(r, (enemy_t)i);
-        n[i]->soul->rect.x = randomX;
-        n[i]->soul->rect.y = randomY;
     }
 }
 
@@ -46,7 +38,7 @@ Person *CreateEnemy(SDL_Renderer *r, enemy_t e) {
     Item *it = NULL;
     static int count = 1;
 
-    int power = NumStats(e, count);
+    int power = NumStats(e, count)-1;
     int intellekt = NumStats(e, count);
     int armor = NumStats(e, count)-count;
     int damage = NumStats(e, count)-count*2;
@@ -54,27 +46,28 @@ Person *CreateEnemy(SDL_Renderer *r, enemy_t e) {
 
     switch (e) {
         case e1: res = CreatePerson(r,TILESIZE*2,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
-            SetFullStats(res, power, intellekt, armor, damage); 
-            it = CreateItem(r,"a", 0,0,0,0,GetEnemyItemImagePath(e),5,0,5,5); 
+            SetFullStats(res, power, intellekt, armor, damage+2); 
+            it = CreateItem(r,"a", 0,0,0,0,GetEnemyItemImagePath(e),10,0,0,0); 
             res->inventory[0] = it;break;
         case e2: res = CreatePerson(r,TILESIZE*3,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
-            SetFullStats(res, power, intellekt, armor, damage); 
-            it = CreateItem(r,"b", 0,0,0,0,GetEnemyItemImagePath(e),0,5,5,5); 
+            SetFullStats(res, power, intellekt, armor, damage+2); 
+            it = CreateItem(r,"b", 0,0,0,0,GetEnemyItemImagePath(e),0,15,0,0); 
             res->inventory[0] = it;  break;
         case e3: res = CreatePerson(r,TILESIZE*4,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
             SetFullStats(res, power, intellekt, armor, damage);
-            it = CreateItem(r,"c", 0,0,0,0,GetEnemyItemImagePath(e),0,5,5,0); 
+            it = CreateItem(r,"c", 0,0,0,0,GetEnemyItemImagePath(e),0,0,0,10); 
             res->inventory[0] = it; count++; break;
         case e4: res = CreatePerson(r,TILESIZE*5,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
             SetFullStats(res, power, intellekt, armor, damage); 
-            it = CreateItem(r,"d", 0,0,0,0,GetEnemyItemImagePath(e),0,5,5,5); 
+            it = CreateItem(r,"d", 0,0,0,0,GetEnemyItemImagePath(e),0,0,15,0); 
             res->inventory[0] = it; count++; break;
-        case e5: res = CreatePerson(r,TILESIZE*6,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e)); 
-            it = CreateItem(r,"e", 0,0,0,0,GetEnemyItemImagePath(e),5,5,0,5); 
+        case e5: res = CreatePerson(r,TILESIZE*6,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e));
+            SetFullStats(res, power, intellekt, armor, damage);  
+            it = CreateItem(r,"e", 0,0,0,0,GetEnemyItemImagePath(e),0,0,10,0); 
             res->inventory[0] = it; count++; break;
         case e6: res = CreatePerson(r,TILESIZE*7,TILESIZE,TILESIZE,TILESIZE,GetEnemyImagePath(e));
             SetFullStats(res, power, intellekt, armor, damage); 
-            it = CreateItem(r,"ё", 0,0,0,0,GetEnemyItemImagePath(e),5,0,5,5); 
+            it = CreateItem(r,"ё", 0,0,0,0,GetEnemyItemImagePath(e),15,0,0,0); 
             res->inventory[0] = it; count++; break;
         default: res = NULL; break;
     }
@@ -107,7 +100,17 @@ const char* GetEnemyItemImagePath(enemy_t e) {
     return enemyItemImages[e];
 }
 
-
+void UpdateEnemyArrStats(Person *n[ENEMYCOUNT]) {
+    for (int i = 0; i < ENEMYCOUNT; i++) {
+        Person *ego = n[i];
+        SetFullStats(ego, ego->stats.power->kolik + 1, ego->stats.intellekt->kolik + 1, ego->stats.armor + 10,ego->stats.damage + 10);
+        ego->stats.hp = ego->stats.power->cap;
+        ego->stats.mana = ego->stats.intellekt->cap;
+        ego->soul->rect.x = TILESIZE * 18;
+        ego->soul->rect.y = TILESIZE;
+    }
+    
+}
 
 void ShowEnemyArr(SDL_Renderer *r, Person *n[ENEMYCOUNT])
 {
@@ -143,7 +146,39 @@ bool IsDead(Person *n[ENEMYCOUNT]) {
     return true;
 }
 
+void UpdateGame(wave_t *wave, Person *EnemyArr[ENEMYCOUNT], Person *tolik, Uint32 *lastUpdateTime, Uint32 *lasttimerAI) {
+    if (wave->numberofwaves != 0 && IsDead(EnemyArr)) {
+        printf("popal 1\n waveinprogress %d\n", wave->waveInProgress);
+        if ((*wave).waveInProgress == false) {
+            printf("popal 2\n");
+            wave->waveInProgress = true;
+            wave->numberofwaves--;
+            UpdateEnemyArrStats(EnemyArr);
+            wave->waveCounter++;
+            wave->enemiesSpawned = 0;
+        }
+    }
 
+    if (wave->waveInProgress && wave->enemiesSpawned < wave->enemiesPerWave) {
+        printf("popal 3\n");
+        if (SDL_GetTicks() - *lastUpdateTime >= 500) {
+            printf("popal 4\n");
+            EnemyArr[wave->enemiesSpawned]->alive = true;
+            wave->enemiesSpawned++;
+            *lastUpdateTime = SDL_GetTicks();
+        }
+    }
+
+    if (SDL_GetTicks() - *lasttimerAI >= 500 && wave->waveInProgress) {
+        printf("popal 5\n");
+        AIEnemy(EnemyArr, tolik);
+        *lasttimerAI = SDL_GetTicks();
+    }
+    if (IsDead(EnemyArr) && wave->enemiesSpawned == wave->enemiesPerWave) {
+        printf("popal 6\n");
+        wave->waveInProgress = false;
+    }
+}
 
 // void AIEnemy(Person *n[ENEMYCOUNT], Person *tolik, int index) {
 //     Person *ego = n[index];

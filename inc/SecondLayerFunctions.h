@@ -7,6 +7,12 @@
 #include "Skill.h"
 #include "Card.h"
 
+
+#define EASY 3
+#define MEDIUM 6
+#define EXTREME 9
+
+
 void FillBufferArr(Map *map, Item ***BufferArr);
 
 bool IsMouseNearPerson(Person* p,  SDL_Point mousecords);
@@ -21,9 +27,9 @@ int menu(SDL_Renderer* renderer);
 
 void outroWin(SDL_Renderer* renderer);
 
-int outroLoose(SDL_Renderer* renderer);
+int outroLoose(SDL_Renderer* renderer, int N_Voln);
 
-int Game(SDL_Renderer* renderer);
+int Game(SDL_Renderer* renderer, int N_Voln);
 
 typeoftile GetType(Map* map,SDL_Point mouse,Person* EnemyArr[ENEMYCOUNT]);
 

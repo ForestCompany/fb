@@ -10,31 +10,34 @@ bool IsMouseNearPerson(Person* p,  SDL_Point mousecords) {
     return  isNearHorizontal || isNearVertical;
 }
 
-int Game(SDL_Renderer *renderer)
+int Game(SDL_Renderer *renderer, int N_Voln)
 {
     Mix_Chunk *footstepSound = Mix_LoadWAV("resource/sounds/Z.wav");
     Uint32 lasttimerAI = 0;
     Uint32 skillaction = 0;
     bool pressed = false;
-    int NOMERVRAGA = 0;
+    wave_t wave = {0,6,0,false,N_Voln};
+
     int res = -1;
     Uint32 lastUpdateTime = 0;
 
     Map* map = CreateMap(renderer, SCREENHEIGHT / TILESIZE - 2, SCREENWIDTH / TILESIZE);
 
     Person* TOLIK = CreatePerson(renderer, TILESIZE, TILESIZE, TILESIZE, TILESIZE, "resource/images/tolik.png");
-    TOLIK->stats.hp = 50;
+    SetFullStats(TOLIK, 7,6,15,50);
+
     Person* EnemyArr[ENEMYCOUNT];
     FillEnemyArr(renderer,EnemyArr);
 
     Skill* skil  = CreateSkill(renderer,(SDL_Rect){XTABSKILL,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/sword.jpg","resource/images/swordBLACK.jpg", 5000, 35);
     Skill* skil1 = CreateSkill(renderer,(SDL_Rect){XTABSKILL1,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/heal.jpg", "resource/images/healBLACK.jpg", 10000, 35);
-    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/ulta.jpg", "resource/images/ultaBLACK.jpg", 1500000, 30);
+    Skill* skil2 = CreateSkill(renderer,(SDL_Rect){XTABSKILL2,YTABSKILL+TILESIZE*HEIGHTAMOUNT,SKILLSIZE,SKILLSIZE}, "resource/images/ulta.jpg", "resource/images/ultaBLACK.jpg", 20000, 30);
 
     
-    card_t *card1 = CreateCard(renderer, XTABCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/Exit.png");
-    card_t *card2 = CreateCard(renderer, XTABCARD + WIDTHCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/Exit.png");
-    card_t *card3 = CreateCard(renderer, XTABCARD + WIDTHCARD * 2, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/Exit.png");
+    card_t *card1 = CreateCard(renderer, XTABCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/swordKARTA.png");
+    card_t *card2 = CreateCard(renderer, XTABCARD + WIDTHCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/healKARTA.png");
+    card_t *card3 = CreateCard(renderer, XTABCARD + WIDTHCARD * 2, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/ultaKARTA.png");
+
     bool PointedKarta = false;
     //Item *item1 = CreateItem(renderer, "item1", TILESIZE * 5, TILESIZE * 5, TILESIZE, TILESIZE, "images/Victoryscreen.png", 1, 1, 1, 1);
     Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "resource/images/hood.png");
@@ -150,14 +153,8 @@ int Game(SDL_Renderer *renderer)
         UpdateSkill(renderer,skil);
         UpdateSkill(renderer,skil1);
         UpdateSkill(renderer,skil2);
-        if (SDL_GetTicks() - lasttimerAI >= 500<<2) {
-            AIEnemy(EnemyArr, TOLIK);
-            lasttimerAI = SDL_GetTicks();
-        }
-        if (SDL_GetTicks() - lastUpdateTime >= 5000 && NOMERVRAGA < 6) {
-            EnemyArr[NOMERVRAGA++]->alive = true;
-            lastUpdateTime = SDL_GetTicks();
-        }
+
+        UpdateGame(&wave, EnemyArr, TOLIK, &lastUpdateTime, &lasttimerAI);
         SDL_SetRenderTarget(renderer, bufferTexture);
         ShowMap(renderer, map);
         ShowPerson(renderer, TOLIK);
@@ -181,7 +178,7 @@ int Game(SDL_Renderer *renderer)
             res = 0;
             isexit = true;
         }
-        else if (IsDead(EnemyArr) && NOMERVRAGA == 6) {
+        else if (IsDead(EnemyArr) && wave.waveCounter == N_Voln) {
             res = 1;
             isexit = true;
         }
@@ -202,7 +199,7 @@ int Game(SDL_Renderer *renderer)
     DestroySkill(skil1);
     DestroySkill(skil2);
     switch(res) {
-        case 0: outroLoose(renderer);break;
+        case 0: outroLoose(renderer, N_Voln);break;
         case 1: outroWin(renderer);break;
     }
     return res;
@@ -302,7 +299,7 @@ int menu(SDL_Renderer* renderer) {
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
     switch (index) {
-        case 0: Game(renderer); break;
+        case 0: Game(renderer,EXTREME); break;
         default: break;
     }
     return 0;
@@ -332,7 +329,7 @@ void outroWin(SDL_Renderer* renderer) {
     DestroyEntity(background);
 }   
 
-int outroLoose(SDL_Renderer* renderer) {
+int outroLoose(SDL_Renderer* renderer, int N_Voln) {
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/deathscreen.png");
     Button* menuButton = CreateButton(renderer, (SDL_Rect){550, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/menuButton.png", "resource/images/menuButton2.png");
     Button* retryButton = CreateButton(renderer, (SDL_Rect){1200, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/retryButton.png", "resource/images/retryButton2.png");
@@ -392,7 +389,7 @@ int outroLoose(SDL_Renderer* renderer) {
     DestroyButton(retryButton);
     switch(index) {
         case 0: menu(renderer);break;
-        case 1: Game(renderer);break;
+        case 1: Game(renderer,EXTREME);break;
     }
 }
 
