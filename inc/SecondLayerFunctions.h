@@ -5,6 +5,12 @@
 #include "Emanager.h"
 #include "Map.h"
 #include "Skill.h"
+#include "Card.h"
+
+
+#define EASY 3
+#define MEDIUM 6
+#define EXTREME 9
 
 
 void FillBufferArr(Map *map, Item ***BufferArr);
@@ -15,12 +21,17 @@ void Init(SDL_Window* w,SDL_Renderer* r);
 
 void Quit(SDL_Window* w,SDL_Renderer* r);
 
-// typeoftile gettype(Map* map, int x, int y);
 void intro(SDL_Renderer* renderer);
 
-typeoftile GetType(Map* map,SDL_Point mouse,Person* EnemyArr[ENEMYCOUNT]);
+int menu(SDL_Renderer* renderer);
 
-void Game(SDL_Renderer* renderer);
+void outroWin(SDL_Renderer* renderer);
+
+int outroLoose(SDL_Renderer* renderer);
+
+int Game(SDL_Renderer* renderer, int N_Voln);
+
+typeoftile GetType(Map* map,SDL_Point mouse,Person* EnemyArr[ENEMYCOUNT]);
 
 Person* FindEnemy(SDL_Point mapcords,Person* EnemyArr[ENEMYCOUNT]);
 #endif 

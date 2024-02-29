@@ -8,6 +8,7 @@ SDL_Window* window;
 
 
 int main(int argc, char* argv[]) {
+    srand(time(NULL));
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
     }
@@ -17,51 +18,19 @@ int main(int argc, char* argv[]) {
     SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW));
     window = SDL_CreateWindow("Forest", 0, 0, SCREENWIDTH, SCREENHEIGHT, SDL_WINDOW_OPENGL);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    // intro(renderer);
-	// Game(renderer);
-    // SDL_DestroyWindow(window);
-    //     SDL_DestroyRenderer(renderer);
-    //     SDL_Quit();
-    //     TTF_Quit();
-    //     IMG_Quit();
-    
-    // Mix_CloseAudio();
-    // intro(renderer);
-    int status = menu(renderer);
-    // int status;
-    // while (status != 2) {
-    //     status = menu(renderer);
-    //     switch (status) {
-    //         case 0:
-    //         status = Game(renderer);
-    //         break;
-    //     case 1:
-    //         outroLoose(renderer);
-    //     case 2:
-    //         status = 2;
-    //         SDL_DestroyWindow(window);
-    //         SDL_DestroyRenderer(renderer);
-    //         SDL_Quit();
-    //         TTF_Quit();
-    //         IMG_Quit();
-    //     }
-        
-    // }
-    outroLoose(renderer);
-    // int status = menu(renderer);
-    // switch(status) {
-    //     case 0:
-    //         Game(renderer);
-    //         break;
-    //     case 1:
-    //         outroLoose(renderer);
-    //     case 2:
-    //         SDL_DestroyWindow(window);
-    //         SDL_DestroyRenderer(renderer);
-    //         SDL_Quit();
-    //         TTF_Quit();
-    //         IMG_Quit();
-    // }
+    intro(renderer);
+    if(menu(renderer) == 0){
+        int dif = ChooseDifficulty(renderer);
+        if(Game(renderer, dif) == 0) {
+            outroLoose(renderer);
+        }
+        else {
+            outroWin(renderer);
+            
+        }
+    }
+
+   
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();

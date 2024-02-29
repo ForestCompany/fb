@@ -2,6 +2,7 @@
     "files.associations": {
         "skill.h": "c",
         "secondlayerfunctions.h": "c",
-        "sound.h": "c"
+        "sound.h": "c",
+        "attributes.h": "c"
     }
 }

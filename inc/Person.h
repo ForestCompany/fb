@@ -22,9 +22,13 @@ void SetFullStats(Person *p, int npower, int nintellekt, int armor, int damage);
 
 void DestroyPerson(Person* p);
 
+void FindCommonPoints(SDL_Point* mas, Person* p1, Person *p2);
+
 void ShowPerson(SDL_Renderer* r, Person* p);
 
 void ShowStats(Person* p);
+
+void Move(Person* p, SDL_Point point);
 
 void PVP(Person* p1, Person* p2);
 

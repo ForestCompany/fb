@@ -5,11 +5,11 @@
 
 typedef struct {
 	Atribute* power;
-	int hp;
+	double hp;
 	Atribute* intellekt;
-	int mana;
-	int damage;
-	int armor;
+	double mana;
+	double damage;
+	double armor;
 }Stats;
 
 

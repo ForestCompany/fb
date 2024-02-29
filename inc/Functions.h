@@ -77,6 +77,7 @@
 
 #define HDHEIGHTSLOT 98
 #define HEIGHTSLOT (HDHEIGHTSLOT * SCREENHEIGHT / 1080)
+//123123123
 
 //FOR INTRO
 #define INTRO_WIDTH (SCREENWIDTH / 3)
@@ -85,22 +86,11 @@
 #define INTRO_Y ((SCREENHEIGHT - INTRO_HEIGHT) / 2)
 
 //FOR BUTTONS IN MENU
-#define BUTTON_X_PERCENTAGE 8 // Відсоток від лівого краю екрану для першої кнопки
-#define BUTTON_Y_PERCENTAGE 60 // Відсоток від верхнього краю екрану для першої кнопки
-#define BUTTON_WIDTH_PERCENTAGE 18 // Відсоток ширини екрану для кнопки
-#define BUTTON_HEIGHT_PERCENTAGE 8 // Відсоток висоти екрану для кнопки
-#define BUTTON_Y_PADDING_PERCENTAGE 12 // Відступ між кнопками
-#define BUTTON_X (SCREENWIDTH * BUTTON_X_PERCENTAGE / 100)
-#define BUTTON_Y (SCREENHEIGHT * BUTTON_Y_PERCENTAGE / 100)
-#define BUTTON_WIDTH (SCREENWIDTH * BUTTON_WIDTH_PERCENTAGE / 100)
-#define BUTTON_HEIGHT (SCREENHEIGHT * BUTTON_HEIGHT_PERCENTAGE / 100)
-
-//FOR BUTTONS IN OUTROLOOSE
-#define BUTTON_X_PERCENTAGE_OUTRO 71.875 // 1150 / 1600 * 100
-#define BUTTON_Y_PERCENTAGE_OUTRO 80.555 // 725 / 900 * 100
-#define BUTTON_SPACING_PERCENTAGE 11.111 // 100 / 900 * 100
-
-//123123123
+#define BUTTON_WIDTH_RATIO 0.17  // Відсоток ширини екрану для кнопки
+#define BUTTON_HEIGHT_RATIO 0.063 // Відсоток висоти екрану для кнопки
+#define BUTTON_X_RATIO 0.78125  // Відсоток від лівого краю екрану для кнопки "start"
+#define BUTTON_Y_START_RATIO 0.5222 // Відсоток від верхнього краю екрану для кнопки "start"
+#define BUTTON_Y_QUIT_RATIO 0.6444 // Відсоток від верхнього краю екрану для кнопки "quit"
 
 
 SDL_Texture* CreateTextureFromImg(SDL_Renderer* renderer, const char* path);
