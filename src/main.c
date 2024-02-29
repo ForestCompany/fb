@@ -20,9 +20,17 @@ int main(int argc, char* argv[]) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     intro(renderer);
-    menu(renderer);
-   
+    if(menu(renderer) == 0){
+        int dif = ChooseDifificulity(renderer);
+        if(Game(renderer, dif) == 0) {
+            outroLoose(renderer);
+        }
+        else {
+            outroWin(renderer);
+        }
+    }
 
+   
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();

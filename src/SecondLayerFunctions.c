@@ -198,10 +198,6 @@ int Game(SDL_Renderer *renderer, int N_Voln)
     DestroySkill(skil);
     DestroySkill(skil1);
     DestroySkill(skil2);
-    switch(res) {
-        case 0: outroLoose(renderer, N_Voln);break;
-        case 1: outroWin(renderer);break;
-    }
     return res;
 }
 
@@ -298,11 +294,8 @@ int menu(SDL_Renderer* renderer) {
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
-    switch (index) {
-        case 0: Game(renderer,EXTREME); break;
-        default: break;
-    }
-    return 0;
+
+    return index;
 }
 
 void outroWin(SDL_Renderer* renderer) {
@@ -329,7 +322,7 @@ void outroWin(SDL_Renderer* renderer) {
     DestroyEntity(background);
 }   
 
-int outroLoose(SDL_Renderer* renderer, int N_Voln) {
+int outroLoose(SDL_Renderer* renderer) {
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/deathscreen.png");
     Button* menuButton = CreateButton(renderer, (SDL_Rect){550, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/menuButton.png", "resource/images/menuButton2.png");
     Button* retryButton = CreateButton(renderer, (SDL_Rect){1200, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/retryButton.png", "resource/images/retryButton2.png");
@@ -387,10 +380,7 @@ int outroLoose(SDL_Renderer* renderer, int N_Voln) {
     DestroyEntity(background);
     DestroyButton(menuButton);
     DestroyButton(retryButton);
-    switch(index) {
-        case 0: menu(renderer);break;
-        case 1: Game(renderer,EXTREME);break;
-    }
+    return index;
 }
 
 

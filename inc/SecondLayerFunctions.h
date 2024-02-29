@@ -27,7 +27,7 @@ int menu(SDL_Renderer* renderer);
 
 void outroWin(SDL_Renderer* renderer);
 
-int outroLoose(SDL_Renderer* renderer, int N_Voln);
+int outroLoose(SDL_Renderer* renderer);
 
 int Game(SDL_Renderer* renderer, int N_Voln);
 
