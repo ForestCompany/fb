@@ -36,23 +36,15 @@ void SwitchSkillState(Skill* h)
 void UpdateSkill(SDL_Renderer* r, Skill* b)
 {
 	Uint32 currentTime = SDL_GetTicks();
-
 	if (b->b->state == STATE2) {
-		
 		if (currentTime - b->lastTimerUpdate >= 1000) {
 			char str[4];
 			sprintf(str, "%d", b->counter);
-
 			SDL_DestroyTexture(b->timer->text);
 			b->timer->text = CreateTextureFromFont(r, str, "resource/fonts/Minecraft.ttf", 12, (SDL_Color) { 255, 255, 255 ,0});
-			
-
-
-			
 			b->counter--;
 			b->lastTimerUpdate = currentTime;
 		}
-
 		if (currentTime - b->StartCd >= b->delta) {
 			SwitchSkillState(b);
 			b->counter = 0;

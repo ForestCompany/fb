@@ -19,14 +19,6 @@ void FillEnemyArr(SDL_Renderer *r, Person *n[ENEMYCOUNT])
     }
 }
 
-// Person *CreateEnemy(SDL_Renderer *r, enemy_t e) {
-//     Person *res = CreatePerson(r, TILESIZE * (e + 2), TILESIZE, TILESIZE, TILESIZE, GetEnemyImagePath(e));
-//     SetFullStats(res, 5, 5, 5, 5);
-//     Item *it = CreateItem(r, "huy penis", 0, 0, 0, 0, GetEnemyItemImagePath(e), 5, 5, 5, 5);
-//     res->inventory[0] = it;
-//     // res->alive = false;
-//     return res;
-// }
 
 int NumStats(enemy_t e, int count)
 {
@@ -103,14 +95,11 @@ const char* GetEnemyItemImagePath(enemy_t e) {
 void UpdateEnemyArrStats(Person *n[ENEMYCOUNT]) {
     for (int i = 0; i < ENEMYCOUNT; i++) {
         Person *ego = n[i];
-        SetFullStats(ego, ego->stats.power->kolik + 1, ego->stats.intellekt->kolik + 1, ego->stats.armor + 10,ego->stats.damage + 10);
+        SetFullStats(ego, ego->stats.power->kolik + 5, ego->stats.intellekt->kolik, ego->stats.armor + 5,ego->stats.damage + 7);
         ego->stats.hp = ego->stats.power->cap;
         ego->stats.mana = ego->stats.intellekt->cap;
-        int x = TILESIZE * 18;
-        int y;
-        y = TILESIZE * (i + 1);
-        ego->soul->rect.x = x;
-        ego->soul->rect.y = y;
+        ego->soul->rect.x = TILESIZE * 18;
+        ego->soul->rect.y = TILESIZE * (rand()%7 + 1);
     }
     
 }
@@ -151,9 +140,7 @@ bool IsDead(Person *n[ENEMYCOUNT]) {
 
 void UpdateGame(wave_t *wave, Person *EnemyArr[ENEMYCOUNT], Person *tolik, Uint32 *lastUpdateTime, Uint32 *lasttimerAI) {
     if (wave->numberofwaves != 0 && IsDead(EnemyArr)) {
-        printf("popal 1\n waveinprogress %d\n", wave->waveInProgress);
         if ((*wave).waveInProgress == false) {
-            printf("popal 2\n");
             wave->waveInProgress = true;
             wave->numberofwaves--;
             UpdateEnemyArrStats(EnemyArr);
@@ -165,9 +152,7 @@ void UpdateGame(wave_t *wave, Person *EnemyArr[ENEMYCOUNT], Person *tolik, Uint3
     }
 
     if (wave->waveInProgress && wave->enemiesSpawned < wave->enemiesPerWave) {
-        printf("popal 3\n");
         if (SDL_GetTicks() - *lastUpdateTime >= 500) {
-            printf("popal 4\n");
             EnemyArr[wave->enemiesSpawned]->alive = true;
             wave->enemiesSpawned++;
             *lastUpdateTime = SDL_GetTicks();
@@ -175,12 +160,10 @@ void UpdateGame(wave_t *wave, Person *EnemyArr[ENEMYCOUNT], Person *tolik, Uint3
     }
 
     if (SDL_GetTicks() - *lasttimerAI >= 500 && wave->waveInProgress) {
-        printf("popal 5\n");
         AIEnemy(EnemyArr, tolik);
         *lasttimerAI = SDL_GetTicks();
     }
     if (IsDead(EnemyArr) && wave->enemiesSpawned == wave->enemiesPerWave) {
-        printf("popal 6\n");
         wave->waveInProgress = false;
     }
 }

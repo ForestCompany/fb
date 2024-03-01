@@ -1,3 +1,0 @@
-rm endgame
-make
-./endgame

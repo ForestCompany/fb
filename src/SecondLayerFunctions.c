@@ -136,10 +136,7 @@ int Game(SDL_Renderer *renderer, int N_Voln)
             case SDL_MOUSEBUTTONDOWN: {
                 SDL_GetMouseState(&mousecords.x, &mousecords.y);
                 SDL_Point mapcord = { mousecords.y / TILESIZE, mousecords.x / TILESIZE };
-                if (SDL_GetTicks() - skillaction >= 5000 && pressed) {
-                    TOLIK->stats.damage -= 40;
-                    pressed = false;
-                }
+                
                 typeoftile e = GetType(map,mapcord,EnemyArr);
 
                 if (IsMouseNearPerson(TOLIK,  mousecords)) {
@@ -176,6 +173,10 @@ int Game(SDL_Renderer *renderer, int N_Voln)
             IncrementHP(TOLIK, 5);
             income = SDL_GetTicks();
         }
+        if (SDL_GetTicks() - skillaction >= 5000 && pressed) {
+                    TOLIK->stats.damage -= 40;
+                    pressed = false;
+                }
         SDL_SetRenderTarget(renderer, bufferTexture);
         ShowMap(renderer, map);
         ShowPerson(renderer, TOLIK);

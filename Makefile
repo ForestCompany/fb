@@ -14,4 +14,3 @@ $(EXECUTABLE): $(SOURCES)
 .PHONY: clean
 clean:
 	rm -f $(EXECUTABLE)
-	

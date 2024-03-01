@@ -74,7 +74,7 @@ void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 
 
 	sprintf(str,  "%d", (int)p->stats.damage);
-	Entity* damage = CreateEntityTTF(r, XTABFORBAR + 100, TILESIZE*HEIGHTAMOUNT + YARMORTAB, 120/2, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
+	Entity* damage = CreateEntityTTF(r, XTABFORBAR + WIDTHBAR/1.4, TILESIZE*HEIGHTAMOUNT + YARMORTAB, 120/2, HEIGHTBAR, "resource/fonts/Minecraft.ttf", str, 120, color);
 
 
 	ShowEntity(r, hp);
@@ -133,16 +133,8 @@ void UpdateStats(Person *p, int index) {
 
 
 
-// void ShowStats(Person* p)
-// {
-// 	printf("hp:%d\nmana:%d\ndamage:%d\narmor:%d\nhp cap:%d\nmana cap:%d\n\n",p->stats.hp, p->stats.mana, p->stats.damage, p->stats.armor, p->stats.power->cap, p->stats.intellekt->cap 		);
-
-// }
-
 void PVP(Person* p1, Person* p2)
 {
-	/*p2->stats.hp -= p1->stats.damage - p2->stats.armor;
-	p1->stats.hp -= p2->stats.damage - p1->stats.armor;*/
 	int uron1 = p1->stats.damage - p2->stats.armor;
 	if (uron1 < 0) uron1 = 0;
 	DecrementHP(p2, uron1);
@@ -186,7 +178,7 @@ void DecrementHP(Person* p, int hp)
 
 void IncrementMana(Person* p, int mana) {
 	if (p->stats.mana + mana  >= p->stats.intellekt->cap) {
-		p->stats.mana = 0;
+		p->stats.mana = p->stats.intellekt->cap;
 	}
 	else {
 		p->stats.mana += mana;
@@ -244,12 +236,9 @@ void Move(Person* p, SDL_Point point) {
 
 void GrabItem(Person *p, Item *it) {
     if (p == NULL) {
-        // Дополнительная проверка на корректность указателей
-        printf("Ошибка: Некорректные указатели на персонажа \n");
         return;
     }
 	if (it == NULL) {
-		printf("ошибка указатель на предмет\n");
 		return;
 	}
 
