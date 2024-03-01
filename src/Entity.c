@@ -33,3 +33,12 @@ void DestroyEntity(Entity* b)
 void ShowEntity(SDL_Renderer* renderer, Entity* but) {
 	SDL_RenderCopy(renderer, but->text, 0, &but->rect);
 }
+
+
+
+
+
+
+
+
+

@@ -22,3 +22,7 @@ void DestroyTile(Tile* tile) {
 typeoftile GetTypeOFTile(Tile* t){
     return t->type;
 }
+
+
+
+

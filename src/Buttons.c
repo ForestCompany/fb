@@ -39,3 +39,8 @@ void ShowButton(SDL_Renderer* r, Button* button){
 			break;
 	}
 }
+
+
+
+
+

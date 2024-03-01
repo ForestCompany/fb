@@ -66,3 +66,8 @@ void PressSkill(Skill* b)
 	b->StartCd = SDL_GetTicks();
 	b->counter = b->delta / 1000;	
 }
+
+
+
+
+

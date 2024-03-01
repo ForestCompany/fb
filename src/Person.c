@@ -38,16 +38,10 @@ void ShowPerson(SDL_Renderer* r, Person* p)
 
 
 
-
-
-
-
 void ShowFontStats(SDL_Renderer* r, Person* p, SDL_Color color)
 {
 	char str[20];
 	SDL_Rect rect;
-	int index = 0;
-	int index0 = 0;
 
 	SDL_SetRenderDrawColor(r, 255, 0, 0, 255);
 	rect.x = XTABFORBAR;
@@ -139,18 +133,11 @@ void UpdateStats(Person *p, int index) {
 
 
 
-void ShowStats(Person* p)
-{
-	printf("hp:%d\nmana:%d\ndamage:%d\narmor:%d\nhp cap:%d\nmana cap:%d\n\n",p->stats.hp, p->stats.mana, p->stats.damage, p->stats.armor, p->stats.power->cap, p->stats.intellekt->cap 		);
-	// for(int i = 0; i < 6; i++){
-	// 	if(p->inventory[i]!=0){
-	// 		printf("%s\n", p->inventory[i]->title);
-	// 	}
-	// 	else {
-	// 		printf("NULL\n");
-	// 	}
-	// }
-}
+// void ShowStats(Person* p)
+// {
+// 	printf("hp:%d\nmana:%d\ndamage:%d\narmor:%d\nhp cap:%d\nmana cap:%d\n\n",p->stats.hp, p->stats.mana, p->stats.damage, p->stats.armor, p->stats.power->cap, p->stats.intellekt->cap 		);
+
+// }
 
 void PVP(Person* p1, Person* p2)
 {
@@ -290,5 +277,10 @@ void GrabItem(Person *p, Item *it) {
         }
     }
 }
+
+
+
+
+
 
 

@@ -25,3 +25,8 @@ void ShowMap(SDL_Renderer* renderer, Map* map);
 
 
 #endif // MAP_H
+
+
+
+
+

@@ -19,3 +19,9 @@ void ShowItem(SDL_Renderer *r, Item *i);
 void DestroyItem(Item*);
 
 #endif 
+
+
+
+
+
+

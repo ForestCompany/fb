@@ -22,3 +22,6 @@ void DestroyButton(Button* button);
 void SwitchButtonState(Button* h);
 void ShowButton(SDL_Renderer* r, Button* button);
 #endif // BUTTON_H
+
+
+

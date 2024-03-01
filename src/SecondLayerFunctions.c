@@ -38,7 +38,6 @@ int Game(SDL_Renderer *renderer, int N_Voln)
     card_t *card2 = CreateCard(renderer, XTABCARD + WIDTHCARD, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/healKARTA.png");
     card_t *card3 = CreateCard(renderer, XTABCARD + WIDTHCARD * 2, YTABCARD, WIDTHCARD, HEIGHTCARD, "resource/images/ultaKARTA.png");
 
-    bool PointedKarta = false;
     //Item *item1 = CreateItem(renderer, "item1", TILESIZE * 5, TILESIZE * 5, TILESIZE, TILESIZE, "images/Victoryscreen.png", 1, 1, 1, 1);
     Entity* hood = CreateEntity(renderer, 0, TILESIZE*HEIGHTAMOUNT, SCREENWIDTH, SCREENHEIGHT - (TILESIZE*HEIGHTAMOUNT), "resource/images/hood.png");
 
@@ -48,7 +47,6 @@ int Game(SDL_Renderer *renderer, int N_Voln)
 
 
     bool cursor = false;
-    bool poshel = false;
     SDL_Point mousecords;
 
     SDL_Texture* bufferTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREENWIDTH, SCREENHEIGHT);
@@ -58,8 +56,6 @@ int Game(SDL_Renderer *renderer, int N_Voln)
     bool isexit = false;
 
     while (!isexit) {
-        Uint32 currentTime = SDL_GetTicks();
-        Uint32 deltaTime = currentTime - lastUpdateTime;
         while (SDL_PollEvent(&e) != 0) {
              
             switch (e.type) {
@@ -174,7 +170,7 @@ int Game(SDL_Renderer *renderer, int N_Voln)
         SDL_RenderCopy(renderer, bufferTexture, NULL, NULL);
         SDL_RenderPresent(renderer);
 
-        if (TOLIK->stats.hp <= 0) {
+        if (TOLIK->stats.hp < 1) {
             res = 0;
             isexit = true;
         }
@@ -202,49 +198,73 @@ int Game(SDL_Renderer *renderer, int N_Voln)
 }
 
 void intro(SDL_Renderer* renderer) {
-    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/intro.png");
+    Button* intro = CreateButton(renderer, (SDL_Rect){INTRO_X, INTRO_Y, INTRO_WIDTH, INTRO_HEIGHT}, 
+                    "resource/images/intro1.png", "resource/images/intro2.png");
+                    
     int alpha = 0;
     bool isexit = false;
-    SDL_Event x;
+    SDL_Event event;
+    Uint32 startTime = SDL_GetTicks();
+    while (!isexit) {
 
-    while (alpha <= 255 && !isexit) {
-        // Обработка событий
-        while (SDL_PollEvent(&x)) {
-            if (x.type == SDL_KEYDOWN) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_KEYDOWN) {
                 isexit = true;
             }
         }
 
         SDL_SetRenderDrawColor(renderer, 0,0,0,0);
-        SDL_RenderClear(renderer);
-        ShowEntity(renderer, background);
+        SDL_SetTextureBlendMode(intro->state1, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(intro->state1, alpha++);
+
+        if (alpha == 255) {
+            intro->state = STATE2;
+        }
+        
+        if (SDL_GetTicks() - startTime >= 6200) {
+            isexit = true;
+        }
+        ShowButton(renderer, intro);
         SDL_RenderPresent(renderer);
-
-        SDL_SetTextureBlendMode(background->text, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(background->text, alpha++);
-
-   
         SDL_Delay(1000. / fps);
     }
 
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
-    DestroyEntity(background);
+    DestroyButton(intro);
 }
+
 
 int menu(SDL_Renderer* renderer) {
 
+    Mix_Music* music = Mix_LoadMUS("resource/sounds/menu.wav");
+    Mix_Chunk* buttonSound = Mix_LoadWAV("resource/sounds/buttonSound.wav");
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/backgroundMenu.png");
-    Button* startButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/startButton.png","resource/images/startButton2.png");
-    Button* settingsButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/settingsButton.png","resource/images/settingsButton2.png");
-    Button* quitButton = CreateButton(renderer, (SDL_Rect){BUTTON_X, BUTTON_Y + 2 * (BUTTON_HEIGHT + BUTTON_Y_PADDING_PERCENTAGE), BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/quitButton.png","resource/images/quitButton2.png");
+
+    Button* startButton = CreateButton(renderer, (SDL_Rect){
+                                SCREENWIDTH * BUTTON_X_RATIO,
+                                SCREENHEIGHT * BUTTON_Y_START_RATIO,
+                                SCREENWIDTH * BUTTON_WIDTH_RATIO,
+                                SCREENHEIGHT * BUTTON_HEIGHT_RATIO},
+                            "resource/images/startButton.png","resource/images/startButton2.png");
+
+    Button* quitButton = CreateButton(renderer, (SDL_Rect){
+                                SCREENWIDTH * BUTTON_X_RATIO,
+                                SCREENHEIGHT * BUTTON_Y_QUIT_RATIO,
+                                SCREENWIDTH * BUTTON_WIDTH_RATIO,
+                                SCREENHEIGHT * BUTTON_HEIGHT_RATIO},
+                            "resource/images/quitButton.png","resource/images/quitButton2.png");
+
+    Mix_VolumeMusic(10);
+    Mix_VolumeChunk(buttonSound, 8);
+    Mix_PlayMusic(music, -1);
+
     Button* buttonArray[] = {
         startButton,
-        settingsButton,
         quitButton
     };
     int index = -1;
-    int numButtons = 3;
+    int numButtons = sizeof(buttonArray) / sizeof(buttonArray[0]);
     int mouseCordsX = 0;
     int mouseCordsY = 0;
     SDL_Event event;
@@ -271,6 +291,7 @@ int menu(SDL_Renderer* renderer) {
                     SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
                     for (int i = 0; i < numButtons; ++i) {
                         if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
+                            Mix_PlayChannel(-1, buttonSound, 1);
                             buttonArray[i]->state = STATE2;
                         } else {
                             buttonArray[i]->state = STATE1;
@@ -279,10 +300,11 @@ int menu(SDL_Renderer* renderer) {
                     break;
             }
         }
+
         ShowEntity(renderer, background);
-        ShowButton(renderer, quitButton);
-        ShowButton(renderer, settingsButton);
-        ShowButton(renderer, startButton);
+        for (int i = 0; i < numButtons; i++) {
+            ShowButton(renderer, buttonArray[i]);
+        }
         SDL_RenderPresent(renderer);
         SDL_Delay(1000. / fps);
     }
@@ -290,19 +312,125 @@ int menu(SDL_Renderer* renderer) {
     for (int i = 0; i < numButtons; i++) {
         DestroyButton(buttonArray[i]);
     }
-    
+    Mix_PauseMusic();
+    Mix_FreeMusic(music);
+    Mix_FreeChunk(buttonSound);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
-
     return index;
 }
 
+int ChooseDifficulty(SDL_Renderer* renderer) {
+
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/defaultScreen.png");
+
+    SDL_Texture* textureArray[] = {
+        CreateTextureFromImg(renderer,"resource/images/babyScreen.png"),
+        CreateTextureFromImg(renderer, "resource/images/mediumScreen.png"),
+        CreateTextureFromImg(renderer,"resource/images/hardScreen.png"),
+        CreateTextureFromImg(renderer, "resource/images/defaultScreen.png")
+    };
+
+    Button* hardButton = CreateButton(renderer, (SDL_Rect){
+                                    700,
+                                    400,
+                                    SCREENWIDTH * BUTTON_WIDTH_RATIO,
+                                    SCREENHEIGHT * BUTTON_HEIGHT_RATIO},
+                                    "resource/images/hardButton1.png", "resource/images/hardButton2.png");
+
+    Button* mediumButton = CreateButton(renderer, (SDL_Rect){
+                                    700,
+                                    500,
+                                    SCREENWIDTH * BUTTON_WIDTH_RATIO,
+                                    SCREENHEIGHT * BUTTON_HEIGHT_RATIO},
+                                    "resource/images/mediumButton1.png", "resource/images/mediumButton2.png");
+
+    Button* babyButton = CreateButton(renderer, (SDL_Rect){
+                                    700,
+                                    600,
+                                    SCREENWIDTH * BUTTON_WIDTH_RATIO,
+                                    SCREENHEIGHT * BUTTON_HEIGHT_RATIO},
+                                    "resource/images/babyButton1.png", "resource/images/babyButton2.png");
+
+    Button* buttonArray[] = {
+        babyButton,
+        mediumButton,
+        hardButton
+    };
+
+    int index = -1;
+    int numButtons = sizeof(buttonArray) / sizeof(buttonArray[0]);
+    int mouseX = 0;
+    int mouseY = 0;
+    SDL_Event event;
+    bool exitLoop = false;
+
+    while (!exitLoop) {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_MOUSEBUTTONDOWN:
+                    SDL_GetMouseState(&mouseX, &mouseY);
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mouseX, mouseY}, &buttonArray[i]->rect)) {
+                            index = i;
+                            exitLoop = true;
+                            break;
+                        }
+                    }
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    SDL_GetMouseState(&mouseX, &mouseY);
+                    bool buttonHovered = false;
+                    for (int i = 0; i < numButtons; ++i) {
+                        if (CheckButton(&(SDL_Point){mouseX, mouseY}, &buttonArray[i]->rect)) {
+                            background->text = textureArray[i];
+                            buttonArray[i]->state = STATE2;
+                            buttonHovered = true;
+                        } else {
+                            buttonArray[i]->state = STATE1;
+                        }
+                    }
+                    if (!buttonHovered)
+                        background->text = textureArray[3];
+                    
+                    break;
+            }
+        }
+        ShowEntity(renderer, background);
+        for (int i = 0; i < numButtons; i++) {
+            ShowButton(renderer, buttonArray[i]);
+        }
+        SDL_RenderPresent(renderer);
+        SDL_Delay(1000.0 / fps);
+    }
+
+    DestroyEntity(background);
+    for (int i = 0; i < 4; i++) {
+        SDL_DestroyTexture(textureArray[i]);
+    }
+
+    for (int i = 0; i < numButtons; i++) {
+        DestroyButton(buttonArray[i]);
+    }
+
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+    printf("%d\n", (index + 1) *3 );
+    return (index + 1) * 3;
+}
+
+
 void outroWin(SDL_Renderer* renderer) {
-    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/Victoryscreen.png");
+    Mix_Music* music = Mix_LoadMUS("resource/sounds/outrowin.wav");
+    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/winscreen.png");
     bool isexit = false;
     SDL_Event event;
     Uint32 startTime = SDL_GetTicks();
+
+    Mix_VolumeMusic(10);
+    Mix_PlayMusic(music, 1);
 
     while (!isexit) {
         while (SDL_PollEvent(&event)) {
@@ -310,76 +438,51 @@ void outroWin(SDL_Renderer* renderer) {
                 isexit = true;
             }
         }
-        if (SDL_GetTicks() - startTime >= 5000) {
+        if (SDL_GetTicks() - startTime >= 10000) {
             isexit = true;
         }
         ShowEntity(renderer, background);
         SDL_RenderPresent(renderer);
         SDL_Delay(1000. / fps);
     }
+    Mix_FreeMusic(music);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
-}   
+}
 
 int outroLoose(SDL_Renderer* renderer) {
-    Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/deathscreen.png");
-    Button* menuButton = CreateButton(renderer, (SDL_Rect){550, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/menuButton.png", "resource/images/menuButton2.png");
-    Button* retryButton = CreateButton(renderer, (SDL_Rect){1200, 750, BUTTON_WIDTH, BUTTON_HEIGHT}, "resource/images/retryButton.png", "resource/images/retryButton2.png");
-    Button* buttonArray[] = {
-        menuButton,
-        retryButton
-    };
+
+    Mix_Music* music = Mix_LoadMUS("resource/sounds/outroloose.wav");
+    Entity* background = CreateEntity (renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/deathscreen.png");
+    Uint32 startTime = SDL_GetTicks();
+    Mix_VolumeMusic(10);
+    Mix_PlayMusic(music, 1);
 
     bool isexit = false;
     int index = -1;
-    int numButtons = sizeof(buttonArray) / sizeof(buttonArray[0]);
     SDL_Event event;
 
-    int mouseCordsX = 0;
-    int mouseCordsY = 0;
+
 
     while (!isexit) {
-        while(SDL_PollEvent(&event)){
-            switch(event.type) {
-                case SDL_QUIT:
-                    isexit = true;
-                    break;
-        
-                case SDL_MOUSEBUTTONDOWN:
-                    SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
-                    for (int i = 0; i < numButtons; ++i) {
-                        if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
-                            isexit = true;
-                            index = i;
-                            break;
-                        }
-                    }
-                    break;
-
-                case SDL_MOUSEMOTION:
-                    SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
-                    for (int i = 0; i < numButtons; ++i) {
-                        if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
-                            buttonArray[i]->state = STATE2;
-                        } else {
-                            buttonArray[i]->state = STATE1;
-                        }
-                    }
-                    break;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_KEYDOWN) {
+                isexit = true;
             }
         }
+        if (SDL_GetTicks() - startTime >= 8000) {
+            isexit = true;
+        }
         ShowEntity(renderer, background);
-        ShowButton(renderer, menuButton);
-        ShowButton(renderer, retryButton);
         SDL_RenderPresent(renderer);
         SDL_Delay(1000. / fps);
     }
+    Mix_FreeMusic(music);
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
     DestroyEntity(background);
-    DestroyButton(menuButton);
-    DestroyButton(retryButton);
+
     return index;
 }
 

@@ -15,3 +15,8 @@ Atribute* CreateAtribute(int kolik,int statperatr,  int income)
 void DestroyAtribute(Atribute* a) {
     free(a);
 }
+
+
+
+
+

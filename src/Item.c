@@ -23,3 +23,8 @@ void ShowItem(SDL_Renderer *r, Item *i) {
         ShowEntity(r, i->soul);
     
 }
+
+
+
+
+

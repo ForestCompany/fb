@@ -23,3 +23,6 @@ void CheckPointed(card_t *cd, Skill* skl, SDL_Point p);
 void DestroyCard(card_t *c); 
 
 #endif
+
+
+

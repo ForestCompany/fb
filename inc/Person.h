@@ -26,7 +26,7 @@ void FindCommonPoints(SDL_Point* mas, Person* p1, Person *p2);
 
 void ShowPerson(SDL_Renderer* r, Person* p);
 
-void ShowStats(Person* p);
+// void ShowStats(Person* p);
 
 void Move(Person* p, SDL_Point point);
 
@@ -55,3 +55,8 @@ void ShowInventory(SDL_Renderer *r, Person *p);
 void UpdateStats(Person *p, int index);
 
 #endif 
+
+
+
+
+

@@ -26,3 +26,8 @@ void ShowEntity(SDL_Renderer* renderer, Entity* but);
 
 
 #endif // BUTTON_H
+
+
+
+
+

@@ -25,3 +25,9 @@ void UpdateSkill(SDL_Renderer* r,Skill* b);
 
 void PressSkill(Skill* b);
 #endif // !SKILL_H
+
+
+
+
+
+

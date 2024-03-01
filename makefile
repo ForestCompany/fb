@@ -1,5 +1,5 @@
-CC := gcc
-CFLAGS := -std=gnu17 -Wall
+CC := clang
+CFLAGS := -std=c11 -Wall -Wextra -Werror -Wpedantic
 LIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lm -lSDL2_mixer
 
 
