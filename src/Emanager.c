@@ -106,8 +106,11 @@ void UpdateEnemyArrStats(Person *n[ENEMYCOUNT]) {
         SetFullStats(ego, ego->stats.power->kolik + 1, ego->stats.intellekt->kolik + 1, ego->stats.armor + 10,ego->stats.damage + 10);
         ego->stats.hp = ego->stats.power->cap;
         ego->stats.mana = ego->stats.intellekt->cap;
-        ego->soul->rect.x = TILESIZE * 18;
-        ego->soul->rect.y = TILESIZE;
+        int x = TILESIZE * 18;
+        int y;
+        y = TILESIZE * (i + 1);
+        ego->soul->rect.x = x;
+        ego->soul->rect.y = y;
     }
     
 }
@@ -154,6 +157,8 @@ void UpdateGame(wave_t *wave, Person *EnemyArr[ENEMYCOUNT], Person *tolik, Uint3
             wave->waveInProgress = true;
             wave->numberofwaves--;
             UpdateEnemyArrStats(EnemyArr);
+            tolik->soul->rect.x = TILESIZE;
+            tolik->soul->rect.y = TILESIZE;
             wave->waveCounter++;
             wave->enemiesSpawned = 0;
         }

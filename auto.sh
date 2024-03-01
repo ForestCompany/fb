@@ -1,3 +1,3 @@
-rm executable
+rm endgame
 make
-./executable
+./endgame

@@ -12,7 +12,21 @@ bool IsMouseNearPerson(Person* p,  SDL_Point mousecords) {
 
 int Game(SDL_Renderer *renderer, int N_Voln)
 {
-    Mix_Chunk *footstepSound = Mix_LoadWAV("resource/sounds/Z.wav");
+    Mix_Chunk* footstepSound = Mix_LoadWAV("resource/sounds/movement.wav");
+    Mix_Chunk* Healskill = Mix_LoadWAV("resource/sounds/healSkill.wav");
+    Mix_Chunk* Hit = Mix_LoadWAV("resource/sounds/hit.wav");
+    Mix_Chunk* Swordskill = Mix_LoadWAV("resource/sounds/swordSkill.wav");
+    Mix_Chunk* Ultimateskill = Mix_LoadWAV("resource/sounds/ultimateSkill.wav");
+    Mix_Chunk* Nomana = Mix_LoadWAV("resource/sounds/nomana.wav");
+    Mix_Music* music = Mix_LoadMUS("resource/sounds/fightMusic.wav");
+    Uint32 income = 0;
+    Mix_VolumeMusic(5);
+    Mix_VolumeChunk(footstepSound, 5);
+    Mix_VolumeChunk(Healskill, 5);
+    Mix_VolumeChunk(Hit, 5);
+    Mix_VolumeChunk(Swordskill, 5);
+    Mix_VolumeChunk(Ultimateskill, 5);
+    Mix_VolumeChunk(Nomana, 5);
     Uint32 lasttimerAI = 0;
     Uint32 skillaction = 0;
     bool pressed = false;
@@ -24,7 +38,7 @@ int Game(SDL_Renderer *renderer, int N_Voln)
     Map* map = CreateMap(renderer, SCREENHEIGHT / TILESIZE - 2, SCREENWIDTH / TILESIZE);
 
     Person* TOLIK = CreatePerson(renderer, TILESIZE, TILESIZE, TILESIZE, TILESIZE, "resource/images/tolik.png");
-    SetFullStats(TOLIK, 7,6,15,50);
+    SetFullStats(TOLIK, 7,7,15,50);
 
     Person* EnemyArr[ENEMYCOUNT];
     FillEnemyArr(renderer,EnemyArr);
@@ -44,6 +58,7 @@ int Game(SDL_Renderer *renderer, int N_Voln)
     SDL_Color color = { 0,0,0,255 };
 
 
+    Mix_PlayMusic(music, -1);
 
 
     bool cursor = false;
@@ -57,17 +72,9 @@ int Game(SDL_Renderer *renderer, int N_Voln)
 
     while (!isexit) {
         while (SDL_PollEvent(&e) != 0) {
-             
             switch (e.type) {
-            case SDL_QUIT:
-                isexit = true;
-                break;
-
             case SDL_KEYDOWN:
                 switch (e.key.keysym.sym) {
-                case SDLK_ESCAPE:
-                    isexit = true;
-                    break;
                 case SDLK_q:
                         if(skil->b->state == STATE1 && TOLIK->stats.mana>= skil->manacost) {
                             PressSkill(skil);
@@ -75,23 +82,35 @@ int Game(SDL_Renderer *renderer, int N_Voln)
                             skillaction = SDL_GetTicks();
                             TOLIK->stats.damage += 40;
                             pressed = true;
+                            Mix_PlayChannel(-1, Swordskill, 0);
                         }
+                    else {
+                        Mix_PlayChannel(-1, Nomana, 0);
+                    }
                     break;
                 case SDLK_w:
                     if(skil1->b->state == STATE1 && TOLIK->stats.mana>= skil1->manacost) {
                             PressSkill(skil1);
                             IncrementHP(TOLIK,25);
                             DecrementMana(TOLIK,skil1->manacost);
+                            Mix_PlayChannel(-1, Healskill, 0);
                         }
+                    else {
+                        Mix_PlayChannel(-1, Nomana, 0);
+                    }
                     break;
                 case SDLK_e:
                     if(skil2->b->state == STATE1 && TOLIK->stats.mana>= skil2->manacost) {
                             PressSkill(skil2);
                             DecrementMana(TOLIK,skil2->manacost);
                             for(int i = 0; i<ENEMYCOUNT;i++) {
-                                DecrementHP(EnemyArr[i],0.6*EnemyArr[i]->stats.hp);
+                                DecrementHP(EnemyArr[i],0.6*EnemyArr[i]->stats.power->cap);
                             }
+                            Mix_PlayChannel(-1, Ultimateskill, 0);
                         }
+                    else {
+                        Mix_PlayChannel(-1, Nomana, 0);
+                    }
                     break;
                 case SDLK_9:
                       DecrementHP(TOLIK, TOLIK->stats.hp);
@@ -139,6 +158,7 @@ int Game(SDL_Renderer *renderer, int N_Voln)
                         printf("ENEMY\n");
                         Person* enemy = FindEnemy(mapcord,EnemyArr);
                         PVP(TOLIK, enemy);
+                        Mix_PlayChannel(-1, Hit, 0);
                         break;
                     }
                 }
@@ -151,6 +171,11 @@ int Game(SDL_Renderer *renderer, int N_Voln)
         UpdateSkill(renderer,skil2);
 
         UpdateGame(&wave, EnemyArr, TOLIK, &lastUpdateTime, &lasttimerAI);
+        if (SDL_GetTicks() - income >= 1000) {
+            IncrementMana(TOLIK, 5);
+            IncrementHP(TOLIK, 5);
+            income = SDL_GetTicks();
+        }
         SDL_SetRenderTarget(renderer, bufferTexture);
         ShowMap(renderer, map);
         ShowPerson(renderer, TOLIK);
@@ -181,8 +206,9 @@ int Game(SDL_Renderer *renderer, int N_Voln)
       
         SDL_Delay(1000./fps);
     }
-
- 
+    Mix_FreeChunk(Healskill);
+    Mix_FreeMusic(music);
+    Mix_FreeChunk(footstepSound);
     SDL_DestroyTexture(bufferTexture);
     DestroyPerson(TOLIK);
     DestroyEntity(hood);
@@ -256,17 +282,19 @@ int menu(SDL_Renderer* renderer) {
                             "resource/images/quitButton.png","resource/images/quitButton2.png");
 
     Mix_VolumeMusic(10);
-    Mix_VolumeChunk(buttonSound, 8);
+    Mix_VolumeChunk(buttonSound, 100);
     Mix_PlayMusic(music, -1);
 
     Button* buttonArray[] = {
         startButton,
         quitButton
     };
+
     int index = -1;
     int numButtons = sizeof(buttonArray) / sizeof(buttonArray[0]);
     int mouseCordsX = 0;
     int mouseCordsY = 0;
+
     SDL_Event event;
     bool isexit = false;
     while(!isexit){
@@ -291,10 +319,15 @@ int menu(SDL_Renderer* renderer) {
                     SDL_GetMouseState(&mouseCordsX, &mouseCordsY);
                     for (int i = 0; i < numButtons; ++i) {
                         if (CheckButton(&(SDL_Point){mouseCordsX, mouseCordsY}, &buttonArray[i]->rect)) {
-                            Mix_PlayChannel(-1, buttonSound, 1);
+                            if (!buttonArray[i]->playedSound) { 
+                                Mix_PlayChannel(-1, buttonSound, 0);
+                                buttonArray[i]->playedSound = true;
+                            }
                             buttonArray[i]->state = STATE2;
+                            
                         } else {
                             buttonArray[i]->state = STATE1;
+                            buttonArray[i]->playedSound = false;
                         }
                     }
                     break;
@@ -312,6 +345,7 @@ int menu(SDL_Renderer* renderer) {
     for (int i = 0; i < numButtons; i++) {
         DestroyButton(buttonArray[i]);
     }
+
     Mix_PauseMusic();
     Mix_FreeMusic(music);
     Mix_FreeChunk(buttonSound);
@@ -324,6 +358,8 @@ int menu(SDL_Renderer* renderer) {
 int ChooseDifficulty(SDL_Renderer* renderer) {
 
     Entity* background = CreateEntity(renderer, 0, 0, SCREENWIDTH, SCREENHEIGHT, "resource/images/defaultScreen.png");
+    
+    Mix_Chunk* buttonSound = Mix_LoadWAV("resource/sounds/buttonSound.wav");
 
     SDL_Texture* textureArray[] = {
         CreateTextureFromImg(renderer,"resource/images/babyScreen.png"),
@@ -333,32 +369,32 @@ int ChooseDifficulty(SDL_Renderer* renderer) {
     };
 
     Button* hardButton = CreateButton(renderer, (SDL_Rect){
-                                    700,
-                                    400,
-                                    SCREENWIDTH * BUTTON_WIDTH_RATIO,
-                                    SCREENHEIGHT * BUTTON_HEIGHT_RATIO},
-                                    "resource/images/hardButton1.png", "resource/images/hardButton2.png");
+                                STARTX,
+                                STARTY,
+                                BUTTONWIDTH,
+                                BUTTONHEIGHT},
+                                "resource/images/hardButton1.png", "resource/images/hardButton2.png");
 
     Button* mediumButton = CreateButton(renderer, (SDL_Rect){
-                                    700,
-                                    500,
-                                    SCREENWIDTH * BUTTON_WIDTH_RATIO,
-                                    SCREENHEIGHT * BUTTON_HEIGHT_RATIO},
-                                    "resource/images/mediumButton1.png", "resource/images/mediumButton2.png");
+                                STARTX,
+                                STARTY + BUTTONHEIGHT + buttonSpacing,
+                                BUTTONWIDTH,
+                                BUTTONHEIGHT},
+                                "resource/images/mediumButton1.png", "resource/images/mediumButton2.png");
 
     Button* babyButton = CreateButton(renderer, (SDL_Rect){
-                                    700,
-                                    600,
-                                    SCREENWIDTH * BUTTON_WIDTH_RATIO,
-                                    SCREENHEIGHT * BUTTON_HEIGHT_RATIO},
-                                    "resource/images/babyButton1.png", "resource/images/babyButton2.png");
+                                STARTX,
+                                STARTY + 2 * (BUTTONHEIGHT + buttonSpacing),
+                                BUTTONWIDTH,
+                                BUTTONHEIGHT},
+                                "resource/images/babyButton1.png", "resource/images/babyButton2.png");
 
     Button* buttonArray[] = {
         babyButton,
         mediumButton,
         hardButton
     };
-
+    Mix_VolumeChunk(buttonSound, 100);
     int index = -1;
     int numButtons = sizeof(buttonArray) / sizeof(buttonArray[0]);
     int mouseX = 0;
@@ -385,16 +421,21 @@ int ChooseDifficulty(SDL_Renderer* renderer) {
                     bool buttonHovered = false;
                     for (int i = 0; i < numButtons; ++i) {
                         if (CheckButton(&(SDL_Point){mouseX, mouseY}, &buttonArray[i]->rect)) {
+                            if (!buttonArray[i]->playedSound) { 
+                                Mix_PlayChannel(-1, buttonSound, 0);
+                                buttonArray[i]->playedSound = true;
+                            }
                             background->text = textureArray[i];
                             buttonArray[i]->state = STATE2;
                             buttonHovered = true;
                         } else {
                             buttonArray[i]->state = STATE1;
+                            buttonArray[i]->playedSound = false;
                         }
                     }
                     if (!buttonHovered)
                         background->text = textureArray[3];
-                    
+                        
                     break;
             }
         }
@@ -462,8 +503,6 @@ int outroLoose(SDL_Renderer* renderer) {
     bool isexit = false;
     int index = -1;
     SDL_Event event;
-
-
 
     while (!isexit) {
         while (SDL_PollEvent(&event)) {

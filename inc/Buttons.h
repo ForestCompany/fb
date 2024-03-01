@@ -14,6 +14,7 @@ typedef struct {
 	SDL_Texture* state1;
 	SDL_Texture* state2;
 	ButtonState state;
+	bool playedSound;
 } Button;
 
 Button* CreateButton(SDL_Renderer* r, SDL_Rect rect, const char* state1path, const char* state2path);

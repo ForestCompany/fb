@@ -4,7 +4,7 @@ LIBS := -lSDL2 -lSDL2_ttf -lSDL2_image -lm -lSDL2_mixer
 
 
 SRC_DIR := src
-EXECUTABLE := executable
+EXECUTABLE := endgame
 
 SOURCES := $(wildcard $(SRC_DIR)/*.c)
 

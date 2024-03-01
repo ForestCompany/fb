@@ -16,7 +16,7 @@
 #define ASPECT 100.
 #define SCREENWIDTH (1600 / (ASPECT / 100))
 #define SCREENHEIGHT (900 / (ASPECT / 100))
-#define fps 60  
+#define fps 60 
 #define WIDTHAMOUNT 20
 #define HEIGHTAMOUNT 9
 #define TILESIZE (SCREENWIDTH/WIDTHAMOUNT)
@@ -91,6 +91,14 @@
 #define BUTTON_X_RATIO 0.78125  // Відсоток від лівого краю екрану для кнопки "start"
 #define BUTTON_Y_START_RATIO 0.5222 // Відсоток від верхнього краю екрану для кнопки "start"
 #define BUTTON_Y_QUIT_RATIO 0.6444 // Відсоток від верхнього краю екрану для кнопки "quit"
+
+//FOR BUTTONS IN CHOOSEDIFFICULTY
+#define buttonSpacing 25
+#define BUTTONWIDTH (SCREENWIDTH * BUTTON_WIDTH_RATIO)
+#define BUTTONHEIGHT (SCREENHEIGHT * BUTTON_HEIGHT_RATIO)
+#define totalButtonHeight (3 * BUTTONHEIGHT + 2 * buttonSpacing)
+#define STARTY ((SCREENHEIGHT - totalButtonHeight) / 2)
+#define STARTX ((SCREENWIDTH - BUTTONWIDTH) / 2)
 
 
 SDL_Texture* CreateTextureFromImg(SDL_Renderer* renderer, const char* path);
